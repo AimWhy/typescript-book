@@ -1,27 +1,115 @@
-# Tools
+# Tools for Working with Markdown Books
 
-These are tools for working with Markdown books.
+If you're working with Markdown books, here are some essential tools and commands to help you streamline your workflow.
 
-To install, use `nvm use` and `npm i`.
+## Installation
 
-To format all TypeScript snippets using Prettier, use `npm run format`.
+Before you begin, ensure you have Node.js installed. To set up the required dependencies, use the following commands:
 
-To compile snippets using TypeScript, use `npm run compile`.
-
-To lint the Markdown files, use `lint:md`.
-
-To lint all Markdown files and apply Prettier formatting to all TypeScript snippets and compile them using TypeScript, use `npm run check`.
-
-To mark snippets that you do not want to compile, use `<!-- skip -->` just before the TypeScript demarcation.
-
-Generate epub file for English version:
+In folder `tools` and `website`:
 
 ```shell
-pandoc -o downloads/typescript-book.epub --metadata title="The Concise TypeScript Book" --metadata author="Simone Poggiali"  -s README.md
+nvm use
+npm install
 ```
-
-Generate epub file for Chinese version:
 
 ```shell
-pandoc -o downloads/typescript-book-zh_CN.epub --metadata title="# 简洁的TypeScript之书" --metadata author="Simone Poggiali"  -s README-zh_CN.md
+brew install pandoc
+brew install epubcheck
+brew install --cask calibre
 ```
+
+## Commands
+
+Use `make` to run the main commands:
+
+* `make format`: Format Markdown files for books.
+* `make check`: Run several checks to ensure the Markdown files are valid.
+* `make website`: Create different Markdown pages for the website.
+* `make website-preview`: Build and preview website locally.
+* `make website-deploy`: Build and deploy website to GitHub Pages.
+* `make books`: Create .epub books.
+
+### Formatting
+
+Consistent code formatting is crucial. To format all TypeScript snippets, we use Prettier. Execute the following command for formatting:
+
+```shell
+npm run format
+```
+
+### Compilation
+
+To compile TypeScript snippets within the Markdown files, utilize the following command:
+
+```shell
+npm run compile
+```
+
+### Linting
+
+To ensure that your Markdown files adhere to proper formatting rules, use the linting command:
+
+```shell
+npm run lint:md
+```
+
+### Linting and Formatting
+
+For a comprehensive process that includes linting all Markdown files, applying Prettier formatting to all TypeScript snippets, and compiling them using TypeScript, use the following command:
+
+```shell
+npm run check
+```
+
+The project uses the [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)Visual Studio Code extension to automatically update the table of contents.
+
+Use the following command to install it:
+
+```shell
+code --install-extension yzhang.markdown-all-in-one
+```
+
+### Skipping Compilation
+
+If you have specific snippets in the Markdown files that you don't want to compile, simply add `<!-- skip -->` just before the TypeScript demarcation for those snippets.
+
+### Epub Generation
+
+To generate Epub files from your Markdown books, navigate to the `tools` folder and run the following command:
+
+```shell
+make-books.sh
+```
+
+After generating the Epub files, thoroughly test them, and once you're satisfied with the results, commit the changes.
+
+These tools will assist you in efficiently working with Markdown books and ensure a smooth and organized process. Happy writing!
+
+## Debug EPUB Issues
+
+To debug the EPUB files you create, follow these steps:
+
+First, download and install Sigil. You can use the following command to install Sigil:
+
+```shell
+brew install --cask sigil
+```
+
+Next, run an EPUB check to validate your EPUB file. For example:
+
+```shell
+epubcheck ../downloads/typescript-book.epub
+```
+
+Finally, open the EPUB file using Sigil for detailed inspection.
+
+## How to Contribute to This E-Book
+
+To contribute to this e-book, follow these steps:
+
+* Update the main Markdown file with your changes.
+* Run `make check` to ensure the linter and other checks pass.
+* Preview the website locally with `make website-preview` to make sure it works as expected.
+* Generate the e-books by running `make books`.
+* Submit your PR and share your awesome contributions!

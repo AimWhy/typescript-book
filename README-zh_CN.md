@@ -4,10 +4,32 @@
 
 本书完全免费且开源。
 
+如果您发现这本 TypeScript 书籍很有价值并希望做出贡献，请考虑通过 PayPal 支持我的努力。谢谢！
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?business=QW82ZS956XLFY&no_recurring=0&currency_code=EUR)
+
+## 翻译
+
+本书已被翻译成多种语言版本，包括：
+
+[中文](https://github.com/gibbok/typescript-book/blob/main/README-zh_CN.md)
+
+## 下载和网站
+
+您还可以下载 Epub 版本：
+
+[https://github.com/gibbok/typescript-book/tree/main/downloads](https://github.com/gibbok/typescript-book/tree/main/downloads)
+
+在线版本可在以下位置获得：
+
+[https://gibbok.github.io/typescript-book](https://gibbok.github.io/typescript-book)
+
 ## 目录表
 
 <!-- markdownlint-disable MD004 -->
 - [简洁的TypeScript之书](#简洁的typescript之书)
+  - [翻译](#翻译)
+  - [下载和网站](#下载和网站)
   - [目录表](#目录表)
   - [介绍](#介绍)
   - [关于作者](#关于作者)
@@ -20,7 +42,7 @@
   - [TypeScript 入门](#typescript-入门)
     - [安装](#安装)
     - [配置](#配置)
-    - [TypeScript 的配置文件 tsconfig.json](#typescript-的配置文件-tsconfigjson)
+    - [TypeScript 的配置文件](#typescript-的配置文件)
       - [target](#target)
       - [lib](#lib)
       - [strict](#strict)
@@ -32,6 +54,7 @@
       - [files](#files)
       - [include](#include)
       - [exclude](#exclude)
+    - [importHelpers](#importhelpers)
     - [迁移到 TypeScript 的建议](#迁移到-typescript-的建议)
   - [探索类型系统](#探索类型系统)
     - [TypeScript 的语言服务](#typescript-的语言服务)
@@ -51,8 +74,8 @@
     - [类型加宽](#类型加宽)
     - [常量](#常量)
       - [类型参数的 const 修饰符](#类型参数的-const-修饰符)
-    - [显式类型注释](#显式类型注释)
     - [常量断言](#常量断言)
+    - [显式类型注释](#显式类型注释)
     - [类型缩小](#类型缩小)
       - [条件](#条件)
       - [抛错或者返回](#抛错或者返回)
@@ -72,12 +95,9 @@
   - [只读属性](#只读属性)
   - [索引签名](#索引签名)
   - [扩展类型](#扩展类型)
-  - [类型交集](#类型交集)
   - [字面量类型](#字面量类型)
   - [字面量推断](#字面量推断)
-  - [空和未定义](#空和未定义)
   - [严格空检查](#严格空检查)
-  - [非空断言运算符 (后缀 !)](#非空断言运算符-后缀-)
   - [枚举](#枚举)
     - [数字枚举](#数字枚举)
     - [字符串枚举](#字符串枚举)
@@ -98,7 +118,8 @@
   - [never 类型](#never-类型)
   - [详尽性检查](#详尽性检查)
   - [对象类型](#对象类型)
-  - [元组类型](#元组类型)
+  - [元组类型（匿名）](#元组类型匿名)
+  - [命名元组类型（已标记）](#命名元组类型已标记)
   - [固定长度元组](#固定长度元组)
   - [联合类型](#联合类型)
   - [交集类型](#交集类型)
@@ -107,9 +128,10 @@
   - [Func 返回值的类型](#func-返回值的类型)
   - [模块的类型](#模块的类型)
   - [映射类型](#映射类型)
+  - [映射类型修饰符](#映射类型修饰符)
   - [条件类型](#条件类型)
   - [分配条件类型](#分配条件类型)
-  - [“infer” 条件类型中的类型推断](#infer-条件类型中的类型推断)
+  - [infer 条件类型中的类型推断](#infer-条件类型中的类型推断)
   - [预定义条件类型](#预定义条件类型)
   - [模板联合类型](#模板联合类型)
   - [任意类型](#任意类型)
@@ -124,7 +146,6 @@
   - [内置原始数据类型](#内置原始数据类型)
   - [常见的内置JS对象](#常见的内置js对象)
   - [重载](#重载)
-  - [Get 与 Set](#get-与-set)
   - [合并与扩展](#合并与扩展)
   - [类型和接口之间的差异](#类型和接口之间的差异)
   - [Class](#class)
@@ -132,6 +153,7 @@
     - [构造函数](#构造函数)
     - [私有和受保护的构造函数](#私有和受保护的构造函数)
     - [访问修饰符](#访问修饰符)
+    - [Get 与 Set](#get-与-set)
     - [类中的自动访问器](#类中的自动访问器)
     - [this](#this)
     - [参数属性](#参数属性)
@@ -142,6 +164,7 @@
       - [属性装饰器](#属性装饰器)
       - [方法装饰器](#方法装饰器)
       - [Getter 和 Setter 装饰器](#getter-和-setter-装饰器)
+    - [装饰器元数据](#装饰器元数据)
     - [继承](#继承)
     - [静态成员](#静态成员)
     - [属性初始化](#属性初始化)
@@ -180,6 +203,7 @@
       - [Lowercase\<T\>](#lowercaset)
       - [Capitalize\<T\>](#capitalizet)
       - [Uncapitalize\<T\>](#uncapitalizet)
+      - [NoInfer\<T\>](#noinfert)
   - [其他](#其他)
     - [错误和异常处理](#错误和异常处理)
     - [混合类](#混合类)
@@ -191,31 +215,35 @@
     - [ES6 模块](#es6-模块)
     - [ES7 求幂运算符](#es7-求幂运算符)
     - [for-await-of 语句](#for-await-of-语句)
-    - [New.target](#newtarget)
+    - [New target 元属性](#new-target-元属性)
     - [动态导入表达式](#动态导入表达式)
-    - [“tsc –watch”](#tsc-watch)
-    - [明确的赋值断言 (!)](#明确的赋值断言-)
+    - ["tsc –watch"](#tsc-watch)
     - [默认声明](#默认声明)
-    - [“const“ 断言](#const-断言)
     - [可选链](#可选链)
-    - [空合并运算符 (??)](#空合并运算符-)
+    - [空合并运算符](#空合并运算符)
     - [模板字符串类型](#模板字符串类型)
     - [函数重载](#函数重载)
+    - [递归类型](#递归类型)
     - [递归条件类型](#递归条件类型)
-    - [Node.js 中的 ECMAScript 模块支持](#nodejs-中的-ecmascript-模块支持)
+    - [Node 中的 ECMAScript 模块支持](#node-中的-ecmascript-模块支持)
     - [断言函数](#断言函数)
     - [可变参数元组类型](#可变参数元组类型)
     - [装箱类型](#装箱类型)
-    - [映射类型中的键重新映射](#映射类型中的键重新映射)
     - [TypeScript 中的协变和逆变](#typescript-中的协变和逆变)
       - [类型参数的可选方差注释](#类型参数的可选方差注释)
-    - [Symbol和模板字符串模式索引签名](#symbol和模板字符串模式索引签名)
+    - [模板字符串模式索引签名](#模板字符串模式索引签名)
     - [satisfies操作符](#satisfies操作符)
+    - [仅类型导入和导出](#仅类型导入和导出)
+    - [使用声明和显式资源管理](#使用声明和显式资源管理)
+      - [使用声明等待](#使用声明等待)
+    - [导入属性](#导入属性)
 <!-- markdownlint-enable MD004 -->
 
 ## 介绍
 
 欢迎来到简洁的TypeScript之书！本指南为您提供有效 TypeScript 开发的基本知识和实践技能。发现编写干净、健壮的代码的关键概念和技术。无论您是初学者还是经验丰富的开发人员，本书都可以作为在项目中利用 TypeScript 强大功能的综合指南和便捷参考。
+
+本书涵盖了 TypeScript 5.2。
 
 ## 关于作者
 
@@ -223,9 +251,9 @@ Simone Poggiali 是一位经验丰富的高级前端开发人员，自 90 年代
 
 您可以通过以下平台联系 Simone Poggiali：
 
-* 领英: <https://www.linkedin.com/in/simone-poggiali>
-* GitHub: <https://github.com/gibbok>
-* 推特: <https://twitter.com/gibbok_coding>
+* 领英: [https://www.linkedin.com/in/simone-poggiali](https://www.linkedin.com/in/simone-poggiali)
+* GitHub: [https://github.com/gibbok](https://github.com/gibbok)
+* X.com: [https://x.com/gibbok_coding](https://x.com/gibbok_coding)
 * 电子邮箱: gibbok.coding📧gmail.com
 
 ## TypeScript简介
@@ -234,7 +262,7 @@ Simone Poggiali 是一位经验丰富的高级前端开发人员，自 90 年代
 
 TypeScript 是一种基于 JavaScript 构建的强类型编程语言。它最初由 Anders Hejlsberg 于 2012 年设计，目前由 Microsoft 作为开源项目开发和维护。
 
-TypeScript 编译为 JavaScript，并且可以在任何 JavaScript 引擎（例如浏览器或服务器 Node.js）中执行。
+TypeScript 编译为 JavaScript，并且可以在任何 JavaScript 运行时（例如浏览器或服务器 Node.js）中执行。
 
 TypeScript 支持多种编程范式，例如函数式、泛型、命令式和面向对象。TypeScript 既不是解释型语言，也不是编译型语言。
 
@@ -266,7 +294,7 @@ TypeScript是用`.ts`或`.tsx`文件编写的, 而JavaScript是用`.js`或`.jsx`
 const sum = (a, b) => a + b;
 ```
 
-该函数可以通过将文件扩展名更改为 .TypeScript 来转换和使用.ts。但是，如果同一个函数使用 TypeScript 类型进行注释，则未经编译就无法在任何 JavaScript 引擎中执行。如果未编译以下 TypeScript 代码，将会产生语法错误
+该函数可以通过将文件扩展名更改为 .TypeScript 来转换和使用.ts。但是，如果同一个函数使用 TypeScript 类型进行注释，则未经编译就无法在任何 JavaScript 运行时中执行。如果未编译以下 TypeScript 代码，将会产生语法错误
 
 <!-- skip -->
 ```typescript
@@ -302,18 +330,20 @@ const result = 1 + true; // 在JavaScript中, 结果等于2
 
 但是，TypeScript 会抛出错误：
 
-运算符“+”不能应用于类型“number”和“boolean”。
+```text
+运算符"+"不能应用于类型"number"和"boolean"。
+``````
 
 出现此错误的原因是 TypeScript 严格强制执行类型兼容性，在这种情况下，它标识了数字和布尔值之间的无效操作。
 
 ### TypeScript 代码生成
 
-TypeScript 编译器有两个主要职责：检查类型错误和编译为 JavaScript。这两个过程是相互独立的。类型不会影响 JavaScript 引擎中代码的执行，因为它们在编译过程中会被完全擦除。即使存在类型错误，TypeScript 仍然可以输出 JavaScript。以下是存在类型错误的 TypeScript 代码示例：
+TypeScript 编译器有两个主要职责：检查类型错误和编译为 JavaScript。这两个过程是相互独立的。类型不会影响 JavaScript 运行时中代码的执行，因为它们在编译过程中会被完全擦除。即使存在类型错误，TypeScript 仍然可以输出 JavaScript。以下是存在类型错误的 TypeScript 代码示例：
 
 <!-- skip -->
 ```typescript
 const add = (a: number, b: number): number => a + b;
-const result = add('x', 'y'); // “字符串”类型的参数不可赋值给“数字”类型的参数
+const result = add('x', 'y'); // "字符串"类型的参数不可赋值给"数字"类型的参数
 ```
 
 但是，它仍然可以生成可执行的 JavaScript 输出：
@@ -340,21 +370,21 @@ interface Cat extends Animal {
 }
 const makeNoise = (animal: Animal) => {
     if (animal instanceof Dog) {
-        // “Dog”仅指一种类型，但在这里用作值。
+        // "Dog"仅指一种类型，但在这里用作值。
         // ...
     }
 };
 ```
 
-由于编译后类型被删除，因此无法在 JavaScript 中运行此代码。为了在运行时识别类型，我们需要使用另一种机制。TypeScript 提供了多种选项，其中常见的一个是“tagged union”。例如：
+由于编译后类型被删除，因此无法在 JavaScript 中运行此代码。为了在运行时识别类型，我们需要使用另一种机制。TypeScript 提供了多种选项，其中常见的一个是 "标签联合（tagged union）"。例如：
 
 ```typescript
 interface Dog {
-    kind: 'dog'; // Tagged union
+    kind: 'dog'; // 标签联合
     bark: () => void;
 }
 interface Cat {
-    kind: 'cat'; // Tagged union
+    kind: 'cat'; // 标签联合
     meow: () => void;
 }
 type Animal = Dog | Cat;
@@ -374,11 +404,11 @@ const dog: Dog = {
 makeNoise(dog);
 ```
 
-属性“kind”是一个可以在运行时用来区分 JavaScript 中的对象的值。
+属性"kind"是一个可以在运行时用来区分 JavaScript 中的对象的值。
 
 运行时的值也可能具有与类型声明中声明的类型不同的类型。例如，如果开发人员误解了 API 类型并对其进行了错误注释。
 
-TypeScript 是 JavaScript 的超集，因此“class”关键字可以在运行时用作类型和值。
+TypeScript 是 JavaScript 的超集，因此"class"关键字可以在运行时用作类型和值。
 
 ```typescript
 class Animal {
@@ -408,7 +438,7 @@ const dog = new Dog('Fido', () => console.log('bark'));
 makeNoise(dog);
 ```
 
-在 JavaScript 中，“类”具有“prototype”属性，“instanceof”运算符可用于测试构造函数的原型属性是否出现在对象原型链中的任何位置。
+在 JavaScript 中，"类"具有"prototype"属性，"instanceof"运算符可用于测试构造函数的原型属性是否出现在对象原型链中的任何位置。
 
 TypeScript 对运行时性能没有影响，因为所有类型都将被删除。然而，TypeScript 确实引入了一些构建时间开销。
 
@@ -420,10 +450,10 @@ TypeScript 可以将代码编译为自 ECMAScript 3 (1999) 以来任何已发布
 
 以下是一些可以在 TypeScript 中使用的现代 JavaScript 功能：
 
-* ECMAScript 模块，而不是 AMD 风格的“define”回调或 CommonJS 的“require”语句。
+* ECMAScript 模块，而不是 AMD 风格的"define"回调或 CommonJS 的"require"语句。
 * 用类代替原型。
-* 变量声明使用“let”或“const”而不是“var”。
-* “for-of”循环或“.forEach”而不是传统的“for”循环。
+* 变量声明使用"let"或"const"而不是"var"。
+* "for-of"循环或".forEach"而不是传统的"for"循环。
 * 用箭头函数代替函数表达式。
 * 解构赋值。
 * 简写属性/方法名称和计算属性名称。
@@ -479,7 +509,7 @@ npm install -g typescript
 Install-Package Microsoft.TypeScript.MSBuild
 ```
 
-在 TypeScript 安装过程中，会安装两个可执行文件：“tsc”作为 TypeScript 编译器，“tsserver”作为 TypeScript 独立服务器。独立服务器包含编译器和语言服务，编辑器和 IDE 可以利用它们来提供智能代码补全。
+在 TypeScript 安装过程中，会安装两个可执行文件："tsc"作为 TypeScript 编译器，"tsserver"作为 TypeScript 独立服务器。独立服务器包含编译器和语言服务，编辑器和 IDE 可以利用它们来提供智能代码补全。
 
 此外，还有几种兼容 TypeScript 的转译器可用，例如 Babel（通过插件）或 swc。这些转译器可用于将 TypeScript 代码转换为其他目标语言或版本。
 
@@ -498,12 +528,12 @@ tsc --init
 以下是使用默认设置运行的 CLI 命令的一些示例：
 
 ```shell
-tsc main.ts // Compile a specific file (main.ts) to JavaScript
-tsc src/*.ts // Compile any .ts files under the 'src' folder to JavaScript
-tsc app.ts util.ts --outfile index.js // Compile two TypeScript files (app.ts and util.ts) into a single JavaScript file (index.js)
+tsc main.ts // 将一个特定的文件 (main.ts) 编译成 JavaScript
+tsc src/*.ts // 将 'src' 文件夹下任意的 .ts 文件编译成 JavaScript
+tsc app.ts util.ts --outfile index.js // 将 2 个 TypeScript 文件 (app.ts 和 util.ts) 编译成 1 个 JavaScript 文件 (index.js)
 ```
 
-### TypeScript 的配置文件 tsconfig.json
+### TypeScript 的配置文件
 
 tsconfig.json 文件用于配置 TypeScript 编译器 (tsc)。通常，它与文件一起添加到项目的根目录中package.json。
 
@@ -514,28 +544,28 @@ tsconfig.json 文件用于配置 TypeScript 编译器 (tsc)。通常，它与文
 
 在以下链接中，您可以找到完整的文档及其配置示例：
 
-<https://www.typescriptlang.org/tsconfig>
+[https://www.typescriptlang.org/tsconfig](https://www.typescriptlang.org/tsconfig)
 
-<http://json.schemastore.org/tsconfig>
+[http://json.schemastore.org/tsconfig](http://json.schemastore.org/tsconfig)
 
 以下列出了常见且有用的配置：
 
 #### target
 
-“target”属性用于指定 TypeScript 应发出/编译到哪个版本的 JavaScript ECMAScript 版本。对于现代浏览器，ES6是一个不错的选择，对于较旧的浏览器，建议使用ES5。
+"target"属性用于指定 TypeScript 应发出/编译到哪个版本的 JavaScript ECMAScript 版本。对于现代浏览器，ES6是一个不错的选择，对于较旧的浏览器，建议使用ES5。
 
 #### lib
 
-“lib”属性用于指定编译时要包含哪些库文件。TypeScript 自动包含“目标”属性中指定功能的 API，但可以根据特定需求省略或选择特定库。例如，如果您正在开发服务器项目，则可以排除“DOM”库，该库仅在浏览器环境中有用。
+"lib"属性用于指定编译时要包含哪些库文件。TypeScript 自动包含"目标"属性中指定功能的 API，但可以根据特定需求省略或选择特定库。例如，如果您正在开发服务器项目，则可以排除"DOM"库，该库仅在浏览器环境中有用。
 
 #### strict
 
-"strict"属性可以提供更强有力的保证并增强类型安全性。建议始终将此属性包含在项目的 tsconfig.json 文件中。启用“strict”属性允许 TypeScript ：
+"strict"属性可以提供更强有力的保证并增强类型安全性。建议始终将此属性包含在项目的 tsconfig.json 文件中。启用"strict"属性允许 TypeScript ：
 
 * 触发每个源文件的代码使用"use strict"。
-* 在类型检查过程中考虑“null”和“undefined”
-* 当不存在类型注释时禁用“any”类型的使用。
-* 在使用“this”表达式时引发错误，否则“this”会被视为任意类型。
+* 在类型检查过程中考虑"null"和"undefined"
+* 当不存在类型注释时禁用"any"类型的使用。
+* 在使用"this"表达式时引发错误，否则"this"会被视为任意类型。
 
 #### module
 
@@ -547,43 +577,48 @@ TypeScript 可以为各种模块系统生成代码，包括 UMD、System、ESNex
 
 #### moduleResolution
 
-“moduleResolution”属性指定模块解析策略。对现代TypeScript代码使用“node”，“classic”仅用于旧版本的 TypeScript（1.6 之前）。
+"moduleResolution"属性指定模块解析策略。对现代TypeScript代码使用"node"，"classic"仅用于旧版本的 TypeScript（1.6 之前）。
 
 #### esModuleInterop
 
-“esModuleInterop”属性允许从未使用“default”属性导出的 CommonJS 模块导入默认值，此属性提供了一个兼容以确保生成的 JavaScript 的兼容性。启用此选项后，我们可以使用“import MyLibrary from 'my-library'”而不是“import * as MyLibrary from 'my-library'”。
+"esModuleInterop"属性允许从未使用"default"属性导出的 CommonJS 模块导入默认值，此属性提供了一个兼容以确保生成的 JavaScript 的兼容性。启用此选项后，我们可以使用 `import MyLibrary from "my-library"` 而不是 `import * as MyLibrary from "my-library"`。
 
 #### jsx
 
-“jsx”属性仅适用于 ReactJS 中使用的 .tsx 文件，并控制 JSX 构造如何编译为 JavaScript。一个常见的选项是“preserve”，它将编译为 .jsx 文件，保持 JSX 不变，以便可以将其传递给 Babel 等不同工具进行进一步转换。
+"jsx"属性仅适用于 ReactJS 中使用的 .tsx 文件，并控制 JSX 构造如何编译为 JavaScript。一个常见的选项是"preserve"，它将编译为 .jsx 文件，保持 JSX 不变，以便可以将其传递给 Babel 等不同工具进行进一步转换。
 
 #### skipLibCheck
 
-“skipLibCheck”属性将阻止 TypeScript 对整个导入的第三方包进行类型检查。此属性将减少项目的编译时间。TypeScript 仍会根据这些包提供的类型定义检查您的代码。
+"skipLibCheck"属性将阻止 TypeScript 对整个导入的第三方包进行类型检查。此属性将减少项目的编译时间。TypeScript 仍会根据这些包提供的类型定义检查您的代码。
 
 #### files
 
-“files”属性向编译器指示必须始终包含在程序中的文件列表。
+"files"属性向编译器指示必须始终包含在程序中的文件列表。
 
 #### include
 
 <!-- markdownlint-disable MD049 -->
-“include”属性向编译器指示我们想要包含的文件列表。此属性允许类似 glob 的模式，例如 "\*_" 表示任何子目录，"_" 表示任何文件名，"?" 表示可选字符。
+"include"属性向编译器指示我们想要包含的文件列表。此属性允许类似 glob 的模式，例如 "\*_" 表示任何子目录，"_" 表示任何文件名，"?" 表示可选字符。
 <!-- markdownlint-enable MD049 -->
+
 #### exclude
 
-"exclude"属性向编译器指示不应包含在编译中的文件列表。这可以包括“node_modules”等文件或测试文件
+"exclude"属性向编译器指示不应包含在编译中的文件列表。这可以包括"node_modules"等文件或测试文件
 注意：tsconfig.json 允许注释。
+
+### importHelpers
+
+TypeScript 在为某些高级或低级 JavaScript 功能生成代码时使用帮助程序代码。 默认情况下，这些助手会在使用它们的文件中复制。 `importHelpers` 选项从 `tslib` 模块导入这些帮助器，从而使 JavaScript 输出更加高效。
 
 ### 迁移到 TypeScript 的建议
 
 对于大型项目，建议采用逐渐过渡的方式，其中 TypeScript 和 JavaScript 代码最初共存。只有小型项目才能一次性迁移到 TypeScript。
 
-此转变的第一步是将 TypeScript 引入构建链过程。这可以通过使用“allowJs”编译器选项来完成，该选项允许 .ts 和 .tsx 文件与现有 JavaScript 文件共存。由于当 TypeScript 无法从 JavaScript 文件推断类型时，它会回退到变量的“any”类型，因此建议在迁移开始时在编译器选项中禁用“noImplicitAny”。
+此转变的第一步是将 TypeScript 引入构建链过程。这可以通过使用"allowJs"编译器选项来完成，该选项允许 .ts 和 .tsx 文件与现有 JavaScript 文件共存。由于当 TypeScript 无法从 JavaScript 文件推断类型时，它会回退到变量的"any"类型，因此建议在迁移开始时在编译器选项中禁用"noImplicitAny"。
 
 第二步是确保您的 JavaScript 测试与 TypeScript 文件一起工作，以便您可以在转换每个模块时运行测试。如果您正在使用 Jest，请考虑使用ts-jest，它允许您使用 Jest 测试 TypeScript 项目。
 
-第三步是在项目中包含第三方库的类型声明。 这些声明可以第三方库的类型声明文件或专门的声明包中找到，你能通过 <https://www.typescriptlang.org/dt/search> 搜索并安装它们。
+第三步是在项目中包含第三方库的类型声明。 这些声明可以第三方库的类型声明文件或专门的声明包中找到，你能通过 [https://www.typescriptlang.org/dt/search](https://www.typescriptlang.org/dt/search) 搜索并安装它们。:
 
 ```shell
 npm install --save-dev @types/package-name or yarn add --dev @types/package-name.
@@ -597,7 +632,7 @@ npm install --save-dev @types/package-name or yarn add --dev @types/package-name
 
 在迁移过程中，不要进行代码重构，而只专注于向模块添加类型。
 
-第五步是启用“noImplicitAny”，这将强制所有类型都是已知和定义的，从而为您的项目提供更好的 TypeScript 体验。
+第五步是启用"noImplicitAny"，这将强制所有类型都是已知和定义的，从而为您的项目提供更好的 TypeScript 体验。
 
 在迁移过程中，您可以使用该@ts-check指令，该指令在 JavaScript 文件中启用 TypeScript 类型检查。该指令提供了宽松版本的类型检查，最初可用于识别 JavaScript 文件中的问题。当@ts-check包含在文件中时，TypeScript 将尝试使用 JSDoc 风格的注释来推断定义。但是，仅在迁移的早期阶段考虑使用 JSDoc 注释。
 
@@ -612,10 +647,10 @@ TypeScript 的语言服务, 也被称为 tsserver，提供了各种功能，例�
 开发人员可以利用专用 API 并创建自己的自定义语言服务插件来增强 TypeScript 编辑体验。这对于实现特殊的 linting 功能或启用自定义模板语言的自动完成特别有用。
 
 <!-- markdownlint-disable MD044 -->
-现实世界中的自定义插件的一个示例是“typescript-styled-plugin”，它为样式组件中的 CSS 属性提供语法错误报告和 IntelliSense 支持。
+现实世界中的自定义插件的一个示例是"typescript-styled-plugin"，它为样式组件中的 CSS 属性提供语法错误报告和 IntelliSense 支持。
 <!-- markdownlint-enable MD044 -->
 
-有关更多信息和快速入门指南，您可以参考 GitHub 上的官方 TypeScript Wiki： <https://github.com/microsoft/TypeScript/wiki/>
+有关更多信息和快速入门指南，您可以参考 GitHub 上的官方 TypeScript Wiki： [https://github.com/microsoft/TypeScript/wiki/](https://github.com/microsoft/TypeScript/wiki/)
 
 ### 结构类型
 
@@ -623,7 +658,7 @@ TypeScript 基于结构类型系统。这意味着类型的兼容性和等效性
 
 TypeScript 的结构类型系统是基于 JavaScript 的动态 duck 类型系统在运行时的工作方式而设计的。
 
-以下示例是有效的 TypeScript 代码。正如您所观察到的，“X”和“Y”具有相同的成员“a”，尽管它们具有不同的声明名称。类型由其结构决定，在这种情况下，由于结构相同，因此它们是兼容且有效的。
+以下示例是有效的 TypeScript 代码。正如您所观察到的，"X"和"Y"具有相同的成员"a"，尽管它们具有不同的声明名称。类型由其结构决定，在这种情况下，由于结构相同，因此它们是兼容且有效的。
 
 ```typescript
 type X = {
@@ -640,7 +675,7 @@ const y: Y = x; // 有效
 
 TypeScript 比较过程是递归的，并在任何级别嵌套的类型上执行。
 
-如果“Y”至少具有与“X”相同的成员，则类型“X”与“Y”兼容。
+如果"Y"至少具有与"X"相同的成员，则类型"X"与"Y"兼容。
 
 ```typescript
 type X = {
@@ -683,7 +718,7 @@ x = y; // 有效
 y = x; // 无效，缺少 b 成员
 ```
 
-允许丢弃函数参数，因为这是 JavaScript 中的常见做法，例如使用 Array.prototype.map()：
+允许丢弃函数参数，因为这是 JavaScript 中的常见做法，例如使用 "Array.prototype.map()"：
 
 ```typescript
 [1, 2, 3].map((element, _index, _array) => element + 'x');
@@ -860,7 +895,7 @@ const y: X<string> = 'a';
 x === y; // 有效，因为最终结构中没有使用类型参数
 ```
 
-当泛型未指定其类型参数时，所有未指定的参数都将被视为带有“any”的类型：
+当泛型未指定其类型参数时，所有未指定的参数都将被视为带有"any"的类型：
 
 ```typescript
 type X = <T>(x: T) => T;
@@ -894,11 +929,11 @@ f = 1; // 无效, 所有类型不能赋值给never
 
 let g: void;
 let g1: any;
-g = 1; // 无效, void不可赋值给除“any”之外的任何内容或从任何内容赋值
+g = 1; // 无效, void不可赋值给除"any"之外的任何内容或从任何内容赋值
 g = g1; // 有效
 ```
 
-请注意，当启用“strictNullChecks”时，“null”和“undefined”的处理方式与“void”类似；否则，它们类似于“never”。
+请注意，当启用"strictNullChecks"时，"null"和"undefined"的处理方式与"void"类似；否则，它们类似于"never"。
 
 ### 类型作为集合
 
@@ -908,11 +943,11 @@ TypeScript 支持各种类型的集合：
 
 | Set term | TypeScript                      | Notes                                                                          |
 | -------- | ------------------------------- | ------------------------------------------------------------------------------ |
-| 空集     | never                           | “never” 包含除自身之外的任何类型                                               |
+| 空集     | never                           | "never" 包含除自身之外的任何类型                                               |
 | 单元素集 | undefined / null / literal type |                                                                                |
 | 有限集   | boolean / union                 |                                                                                |
 | 无限集   | string / number / object        |                                                                                |
-| 通用集   | any / unknown                   | 每个元素都是“any”的成员，每个集合都是它的子集/“unknown”是“any”的类型安全对应项 |
+| 通用集   | any / unknown                   | 每个元素都是"any"的成员，每个集合都是它的子集/"unknown"是"any"的类型安全对应项 |
 
 这里有几个例子：
 
@@ -935,10 +970,10 @@ TypeScript 支持各种类型的集合：
 | T1 \| T2              | T1 ∪ T2 (并集)   | type XY = 'X' \| 'Y';                                            |
 |                       |                  | type JK = 1 \| 2;                                                |
 |                       |                  |
-| T1 & T2               | T1 ∩ T2 (交集)   | type X = { a: string }                                           |
-|                       |                  | type Y = { b: string }                                           |
+| T1 & T2               | T1 ∩ T2 (交集)   | type X = \{ a: string \}                                           |
+|                       |                  | type Y = \{ b: string \}                                           |
 |                       |                  | type XY = X & Y                                                  |
-|                       |                  | const x: XY = { a: 'a', b: 'b' }                                 |
+|                       |                  | const x: XY = \{ a: 'a', b: 'b' \}                                 |
 |                       |                  |
 | unknown               | 通用集           | const x: unknown = 1                                             |
 
@@ -952,7 +987,7 @@ type Y = {
     b: string;
 };
 type XY = X | Y;
-const r: XY = { a: 'a', b: 'x' }; // Valid
+const r: XY = { a: 'a', b: 'x' }; // 有效
 ```
 
 交集（T1 & T2）创建一个更窄的集合（仅共享）：
@@ -967,11 +1002,11 @@ type Y = {
     b: string;
 };
 type XY = X & Y;
-const r: XY = { a: 'a' }; // Invalid
-const j: XY = { a: 'a', b: 'b' }; // Valid
+const r: XY = { a: 'a' }; // 无效
+const j: XY = { a: 'a', b: 'b' }; // 有效
 ```
 
-在这种情况下，关键字extends可以被视为“的子集”。它为类型设置约束。与泛型一起使用的扩展将泛型视为无限集，并将其限制为更具体的类型。请注意，这extends与 OOP 意义上的层次结构无关（TypScript 中没有这个概念）。TypeScript 使用集合并且没有严格的层次结构，事实上，如下面的示例所示，两种类型可以重叠，而不会成为另一种类型的子类型（TypScript 考虑对象的结构和形状）。
+在这种情况下，关键字extends可以被视为"的子集"。它为类型设置约束。与泛型一起使用的扩展将泛型视为无限集，并将其限制为更具体的类型。请注意，这extends与 OOP 意义上的层次结构无关（TypScript 中没有这个概念）。TypeScript 使用集合并且没有严格的层次结构，事实上，如下面的示例所示，两种类型可以重叠，而不会成为另一种类型的子类型（TypScript 考虑对象的结构和形状）。
 
 ```typescript
 interface X {
@@ -1014,8 +1049,8 @@ type X = {
     a: string;
 };
 
+// 类型声明
 const x: X = {
-    // 类型声明
     a: 'a',
 };
 ```
@@ -1090,13 +1125,13 @@ let y = x!; // number
 环境声明是描述 JavaScript 代码类型的文件，它们的文件名格式为.d.ts.. 它们通常被导入并用于注释现有的 JavaScript 库或向项目中的现有 JS 文件添加类型。
 
 许多常见的库类型可以在以下位置找到：
-<https://github.com/DefinitelyTyped/DefinitelyTyped/>
+[https://github.com/DefinitelyTyped/DefinitelyTyped/](https://github.com/DefinitelyTyped/DefinitelyTyped/)
 
 ```shell
 npm install --save-dev @types/library-name
 ```
 
-对于您定义的环境声明，您可以使用“三斜杠”引用导入：
+对于您定义的环境声明，您可以使用"三斜杠"引用导入：
 
 <!-- skip -->
 ```typescript
@@ -1104,6 +1139,8 @@ npm install --save-dev @types/library-name
 ```
 
 即使在 JavaScript 文件中，您也可以通过 `// @ts-check` 使用环境声明。
+
+`declare` 关键字可以为现有的 JavaScript 代码启用类型定义，而无需导入它，作为来自另一个文件或全局的类型的占位符。
 
 ### 属性检测和多余属性检测
 
@@ -1117,8 +1154,8 @@ type X = {
     a: string;
 };
 const y = { a: 'a', b: 'b' };
-const x: X = y; // Valid because structural typing
-const w: X = { a: 'a', b: 'b' }; // Invalid because excess property checking
+const x: X = y; // 有效，因为结构类型
+const w: X = { a: 'a', b: 'b' }; // 无效，因为多余属性检测
 ```
 
 ### 弱类型
@@ -1167,16 +1204,18 @@ type Options = {
 };
 
 const fn = (options: Options) => undefined;
-fn({ c: 'c' }); // Valid
+fn({ c: 'c' }); // 有效
 ```
 
 ### 严格的对象字面量检测 (Freshness)
 
-严格的对象字面量检查（有时称为新鲜度）是 TypeScript 中的一项功能，有助于捕获多余或拼写错误的属性，否则这些属性在正常结构类型检查中会被忽视。
+严格的对象字面量检查（有时称为“新鲜度”）是 TypeScript 中的一项功能，有助于捕获多余或拼写错误的属性，否则这些属性在正常结构类型检查中会被忽视。
 
-创建对象字面量时，TypeScript 编译器认为它是“新鲜的”。如果将对象字面量赋值给变量或作为参数传递，并且对象字面量指定目标类型中不存在的属性，则 TypeScript 将引发错误。
+创建对象字面量时，TypeScript 编译器认为它是“新鲜的”。 如果将对象字面量分配给变量或作为参数传递，并且对象字面量指定目标类型中不存在的属性，则 TypeScript 将引发错误。
 
-但是，当对象字面量的类型被加宽时，严格的对象字面量检查不适用，这意味着对象字面量在结构上与更广泛的类型兼容。下面举一些例子来说明：
+然而，当扩展对象文字或使用类型断言时，“新鲜感”就会消失。
+
+下面举一些例子来说明：
 
 <!-- skip -->
 ```typescript
@@ -1184,16 +1223,20 @@ type X = { a: string };
 type Y = { a: string; b: string };
 
 let x: X;
-x = { a: 'a', b: 'b' }; // Freshness check: 无效赋值
+x = { a: 'a', b: 'b' }; // 严格的对象字面量检查：无效的赋值
 var y: Y;
-y = { a: 'a', bx: 'bx' }; // Freshness check: 无效赋值
+y = { a: 'a', bx: 'bx' }; // 严格的对象字面量检查：无效的赋值
 
 const fn = (x: X) => console.log(x.a);
 
 fn(x);
-fn(y); // 无错误，结构类型兼容
+fn(y); // 类型加宽：没有错误, 结构类型兼容
 
-fn({ a: 'a', bx: 'b' }); // Freshness check: 无效赋值
+fn({ a: 'a', bx: 'b' }); // 严格的对象字面量检查：无效的参数
+
+let c: X = { a: 'a' };
+let d: Y = { a: 'a', b: '' };
+c = d; // 类型加宽：没有严格的对象字面量检查
 ```
 
 ### 类型推断
@@ -1215,7 +1258,7 @@ TypeScript 编译器分析值或表达式并根据可用信息确定其类型。
 
 ### 更高级的推断
 
-当在类型推断中使用多个表达式时，TypeScript 会查找“最佳常见类型”。例如：
+当在类型推断中使用多个表达式时，TypeScript 会查找"最佳常见类型"。例如：
 
 ```typescript
 let x = [1, 'x', 1, null]; // 类型推断为: (string | number | null)[]
@@ -1227,10 +1270,10 @@ let x = [1, 'x', 1, null]; // 类型推断为: (string | number | null)[]
 let x = [new RegExp('x'), new Date()]; // 类型推断为: (RegExp | Date)[]
 ```
 
-TypeScript 利用基于变量位置的“上下文类型”来推断类型。在下面的示例中，编译器知道它的e类型是MouseEvent，因为在lib.d.ts 文件中定义了click事件类型，该文件包含各种常见 JavaScript 构造和 DOM 的环境声明：
+TypeScript 利用基于变量位置的"上下文类型"来推断类型。在下面的示例中，编译器知道它的e类型是MouseEvent，因为在lib.d.ts 文件中定义了click事件类型，该文件包含各种常见 JavaScript 构造和 DOM 的环境声明：
 
 ```typescript
-window.addEventListener('click', function (e) {}); // e inferred type is MouseEvent
+window.addEventListener('click', function (e) {}); // e 的类型被推断为 MouseEvent
 ```
 
 ### 类型加宽
@@ -1246,7 +1289,7 @@ y = x; // 无效，字符串不可分配给类型 'x' | 'y'。
 
 TypeScript根据初始化期间提供的单个值（`x`），将 `string` 赋予给 `x`，这是一个扩展的示例。
 
-TypeScript 提供了控制加宽过程的方法，例如使用：
+TypeScript 提供了控制加宽过程的方法，例如使用"const"。
 
 ### 常量
 
@@ -1260,7 +1303,7 @@ let y: 'y' | 'x' = 'y';
 y = x; // 有效: x的类型推断为 'x'
 ```
 
-通过使用 const 声明变量 x，其类型被缩小为特定的文字值“x”。由于 x 的类型被缩小，因此可以将其赋值给变量 y 而不会出现任何错误。可以推断类型的原因是因为 const 变量无法重新分配，因此它们的类型可以缩小到特定的文字类型，在本例中为字面量类型“x”。
+通过使用 const 声明变量 x，其类型被缩小为特定的文字值"x"。由于 x 的类型被缩小，因此可以将其赋值给变量 y 而不会出现任何错误。可以推断类型的原因是因为 const 变量无法重新分配，因此它们的类型可以缩小到特定的文字类型，在本例中为字面量类型"x"。
 
 #### 类型参数的 const 修饰符
 
@@ -1288,29 +1331,9 @@ const values = identity({ a: 'a', b: 'b' }); // 类型推断为: { a: "a"; b: "b
 
 现在我们可以看到属性 `a` 和 `b` 被推断为const，因此 `a` 和 `b`被视为字符串文字而不仅仅是 `string` 类型。
 
-### 显式类型注释
-
-我们可以具体地传递一个类型，在下面的示例中，属性x的类型是number：
-
-```typescript
-const v = {
-    x: 1, // 推断类型: number (加宽了)
-};
-v.x = 3; // 有效
-```
-
-我们可以通过使用字面量类型的联合使类型注释更加具体：
-
-```typescript
-const v: { x: 1 | 2 | 3 } = {
-    x: 1, // x 现在是字面量的联合类型： 1 | 2 | 3
-};
-v.x = 3; // 有效
-```
-
 ### 常量断言
 
-常量断言允许我们通过断言类型来更加具体 `const` 。它可以用于单个属性或整个对象。这里有一些例子：
+此功能允许您根据变量的初始化值声明具有更精确的文字类型的变量，这向编译器表明该值应被视为不可变文字。 这里有一些例子：
 
 在单个属性上：
 
@@ -1337,6 +1360,28 @@ const x = [1, 2, 3]; // number[]
 const y = [1, 2, 3] as const; // 只读数组 [1, 2, 3]
 ```
 
+### 显式类型注释
+
+我们可以具体地传递一个类型，在下面的示例中，属性x的类型是number：
+
+```typescript
+const v = {
+    x: 1, // 推断类型: number (加宽了)
+};
+v.x = 3; // 有效
+```
+
+我们可以通过使用字面量类型的联合使类型注释更加具体：
+
+<!-- skip -->
+```typescript
+const v: { x: 1 | 2 | 3 } = {
+    x: 1, // x 现在是字面量的联合类型： 1 | 2 | 3
+};
+v.x = 3; // 有效
+v.x = 100; // 无效的
+```
+
 ### 类型缩小
 
 类型缩小是 TypeScript 中的一个过程，其中一般类型缩小为更具体的类型。当 TypeScript 分析代码并确定某些条件或操作可以细化类型信息时，就会发生这种情况。
@@ -1351,7 +1396,7 @@ const y = [1, 2, 3] as const; // 只读数组 [1, 2, 3]
 let x: number | undefined = 10;
 
 if (x !== undefined) {
-    x += 100; // The type is number, which had been narrowed by the condition
+    x += 100; // 由于条件判断，类型被缩小为 number
 }
 ```
 
@@ -1377,7 +1422,7 @@ x += 100;
 
 #### 可区分联合
 
-使用“可区分联合”是 TypeScript 中的一种模式，其中向对象添加显式“标签”以区分联合内的不同类型。该模式也称为“标记联合”。在以下示例中，“tag”由属性“type”表示：
+使用"可区分联合"是 TypeScript 中的一种模式，其中向对象添加显式"标签"以区分联合内的不同类型。该模式也称为"标记联合"。在以下示例中，"tag"由属性"type"表示：
 
 ```typescript
 type A = { type: 'type_a'; value: number };
@@ -1395,7 +1440,7 @@ const x = (input: A | B): string | number => {
 
 #### 用户定义的类型保护
 
-在 TypeScript 无法确定类型的情况下，可以编写一个称为“用户定义类型保护”的辅助函数。在下面的示例中，我们将在应用某些过滤后利用类型谓词来缩小类型范围：
+在 TypeScript 无法确定类型的情况下，可以编写一个称为"用户定义类型保护"的辅助函数。在下面的示例中，我们将在应用某些过滤后利用类型谓词来缩小类型范围：
 
 ```typescript
 const data = ['a', null, 'c', 'd', null, 'f'];
@@ -1437,13 +1482,13 @@ const isReady: boolean = true;
 
 ### number
 
-TypeScript 中的数据类型 `boolean` 用 64 位浮点值表示。类型 `boolean` 可以表示整数和分数。TypeScript 还支持十六进制、二进制和八进制，例如：
+TypeScript 中的数据类型 `number` 用 64 位浮点值表示。类型 `number` 可以表示整数和分数。TypeScript 还支持十六进制、二进制和八进制，例如：
 
 ```typescript
 const decimal: number = 10;
-const hexadecimal: number = 0xa00d; // Hexadecimal starts with 0x
-const binary: number = 0b1010; // Binary starts with 0b
-const octal: number = 0o633; // Octal starts with 0c
+const hexadecimal: number = 0xa00d; // 十六进制数以 0x 开始
+const binary: number = 0b1010; // 二进制数以 0b 开始
+const octal: number = 0o633; // 八进制数以 0o 开始
 ```
 
 ### bigInt
@@ -1457,14 +1502,17 @@ const x: bigint = BigInt(9007199254740991);
 const y: bigint = 9007199254740991n;
 ```
 
-注意：`bigInt` 值不能与 `number`和内部的 `Math` 混用，它们必须强制为相同的类型。
+笔记：
+
+* `bigInt` 值不能与 `number` 混合，也不能与内置的 `Math` 一起使用，它们必须强制为相同的类型。
+* 仅当目标配置为 ES2020 或更高版本时，“bigInt”值才可用。
 
 ### symbol
 
 JavaScript 有一个原始函数 Symbol()，它创建一个全局唯一的引用。
 
 ```typescript
-let sym = Symbol('x'); // Type symbol
+let sym = Symbol('x'); // symbol 类型
 ```
 
 ### null and undefined
@@ -1504,7 +1552,7 @@ const y: readonly [string, number] = ['a', 1];
 
 ### any
 
-数据 `any` 类型字面上代表“任何”值，当 TypeScript 无法推断类型或未指定时，它是默认值。
+数据 `any` 类型字面上代表"任何"值，当 TypeScript 无法推断类型或未指定时，它是默认值。
 
 使用 `any` 时，TypeScript编译器会跳过类型检查，因此 `any` 使用时不存在类型安全。通常，当发生错误时不要使用 `any` 静默编译器，而是专注于修复错误，因为使用 `any` 它可能会破坏契约，并且我们会失去 TypeScript 自动完成的好处。
 
@@ -1561,7 +1609,7 @@ const sum = (a = 10, b: number): number => a + b;
 ```typescript
 type X = {
     a: number;
-    b?: number; // Optional
+    b?: number; // 可选的
 };
 ```
 
@@ -1608,10 +1656,10 @@ type K = {
 const k: K = { x: 'x', 1: 'b' };
 console.log(k['x']);
 console.log(k[1]);
-console.log(k['1']); // same result as k[1]
+console.log(k['1']); // 同 k[1] 的结果相同
 ```
 
-请注意，JavaScript 会自动将 `number` 的索引转换相同值的 'string'索引, 比如 `k[1]` 和 k["1"] 返回相同值。
+请注意，JavaScript 会自动将 `number` 的索引转换相同值的 'string'索引, 比如 `k[1]` 和 `k["1"]` 返回相同值。
 
 ## 扩展类型
 
@@ -1661,32 +1709,6 @@ type A = {
 interface B extends A {
     b: string;
 }
-```
-
-## 类型交集
-
-交集类型由 `&` 运算符定义，是扩展类型的主要机制，`extends` 仅适用于 `interface` ：
-
-```typescript
-type A = {
-    a: string;
-};
-type B = {
-    b: string;
-};
-type C = A & B;
-```
-
-或者：
-
-```typescript
-interface X {
-    x: string;
-}
-interface Y {
-    y: string;
-}
-type J = X & Y;
 ```
 
 ## 字面量类型
@@ -1755,21 +1777,9 @@ let o = {
 };
 ```
 
-## 空和未定义
-
-在 TypeScript 中，`null` 和 `undefined` 是代表不同值的两种不同类型。
-
-`undefined` 用于表示变量或属性尚未初始化或没有值，而 `null` 用于表示故意不存在值。
-
-启用该 `strictNullChecks` 选项后，TypeScript 要求将变量和属性显式键入为可为空或不可为空。
-
 ## 严格空检查
 
 `strictNullChecks` 是一个 TypeScript 编译器选项，强制执行严格的 null 检查。启用此选项后，只有在变量和参数已使用联合类型 `null` | `undefined` 显式声明为该类型时，才可以对其进行赋值`null` 或者 `undefined`。如果变量或参数未显式声明为可为空，TypeScript 将生成错误以防止潜在的运行时错误。
-
-## 非空断言运算符 (后缀 !)
-
-非空断言运算符（后缀 !）是一项 TypeScript 功能，允许您断言变量或属性不是null或undefined，即使 TypeScript 的静态类型分析表明它可能是。使用此功能可以删除任何显式检查。
 
 ## 枚举
 
@@ -1791,7 +1801,7 @@ enum Color {
 
 ```typescript
 enum Size {
-    Small, // value starts from 0
+    Small, // 值从 0 开始
     Medium,
     Large,
 }
@@ -1843,27 +1853,50 @@ console.log('EN' /* Language.English */);
 
 ### 反向映射
 
-在 TypeScript 中，枚举中的反向映射是指从值中检索枚举成员名称的能力。默认情况下，枚举成员具有从名称到值的正向映射，但可以通过为每个成员显式设置值来创建反向映射。当您需要按枚举成员的值查找枚举成员，或者需要迭代所有枚举成员时，反向映射非常有用。
+在 TypeScript 中，枚举中的反向映射是指从值中检索枚举成员名称的能力。默认情况下，枚举成员具有从名称到值的正向映射，但可以通过为每个成员显式设置值来创建反向映射。当您需要按枚举成员的值查找枚举成员，或者需要迭代所有枚举成员时，反向映射非常有用。需要注意的是，只有数字类型的枚举成员会生成反向映射，字符串类型的枚举成员则不会。
 
 以下枚举：
 
 ```typescript
-const enum Language {
-    English = 'EN',
-    Spanish = 'ES',
+enum Grade {
+    A = 90,
+    B = 80,
+    C = 70,
+    F = 'fail',
 }
-console.log(Language.English);
 ```
 
 编译为：
 
 <!-- skip -->
+```javascript
+'use strict';
+var Grade;
+(function (Grade) {
+    Grade[(Grade['A'] = 90)] = 'A';
+    Grade[(Grade['B'] = 80)] = 'B';
+    Grade[(Grade['C'] = 70)] = 'C';
+    Grade['F'] = 'fail';
+})(Grade || (Grade = {}));
+```
+
+由此可见，对数字类型的枚举成员，可以从枚举值映射回枚举名称，但对字符串类型的枚举成员无法这样做。
+
+<!-- skip -->
 ```typescript
-(function (Language) {
-    Language['English'] = 'EN';
-    Language['Spanish'] = 'ES';
-})(Language || (Language = {}));
-console.log(Language.English);
+enum Grade {
+    A = 90,
+    B = 80,
+    C = 70,
+    F = 'fail',
+}
+const myGrade = Grade.A;
+console.log(Grade[myGrade]); // A
+console.log(Grade[90]); // A
+
+const failGrade = Grade.F;
+console.log(failGrade); // fail
+console.log(Grade[failGrade]); // 因为索引表达式的类型不是 'number'，所以元素是隐式的 'any' 类型。
 ```
 
 ### 环境枚举
@@ -1919,7 +1952,7 @@ TypeScript 可识别多种缩小类型范围的方法：
 typeof 类型保护是 TypeScript 中的一种特定类型保护，它根据变量的内置 JavaScript 类型检查变量的类型。
 
 ```typescript
-const fn = (x: number | string): number => {
+const fn = (x: number | string) => {
     if (typeof x === 'number') {
         return x + 1; // x 是数字
     }
@@ -1932,11 +1965,11 @@ const fn = (x: number | string): number => {
 TypeScript 中的真实性缩小是通过检查变量是真还是假来相应地缩小其类型来实现的。
 
 ```typescript
-const printName = (name: string | null | undefined) => {
+const toUpperCase = (name: string | null) => {
     if (name) {
-        console.log(name.toUpperCase());
+        return name.toUpperCase();
     } else {
-        console.log('No name specified');
+        return null;
     }
 };
 ```
@@ -1945,22 +1978,22 @@ const printName = (name: string | null | undefined) => {
 
 TypeScript 中的相等缩小通过检查变量是否等于特定值来相应缩小其类型。
 
+它与`switch`语句和等号运算符（例如`===`、`!==`、`==`和`!=`）结合使用来缩小类型范围。
+
 ```typescript
-const logMessage = (status: 'success' | 'error') => {
+const checkStatus = (status: 'success' | 'error') => {
     switch (status) {
         case 'success':
-            console.log('Operation was successful!');
-            break;
+            return true
         case 'error':
-            console.log('An error occurred.');
-            break;
+            return null
     }
 };
 ```
 
 ### In运算符缩小
 
-TypeScript 中的 in 运算符缩小范围是一种根据变量类型中是否存在属性来缩小变量类型的方法。
+TypeScript 中的 `in` 运算符缩小范围是一种根据变量类型中是否存在属性来缩小变量类型的方法。
 
 ```typescript
 type Dog = {
@@ -1973,15 +2006,11 @@ type Cat = {
     likesCream: boolean;
 };
 
-const printPet = (pet: Dog | Cat) => {
+const getAnimalType = (pet: Dog | Cat) => {
     if ('breed' in pet) {
-        console.log(`This is a ${pet.breed} dog named ${pet.name}.`);
+        return 'dog';
     } else {
-        console.log(
-            `This is a cat named ${pet.name} that ${
-                pet.likesCream ? 'likes' : "doesn't like"
-            } cream.`
-        );
+        return 'cat';
     }
 };
 ```
@@ -1995,7 +2024,10 @@ class Square {
     constructor(public width: number) {}
 }
 class Rectangle {
-    constructor(public width: number, public height: number) {}
+    constructor(
+        public width: number,
+        public height: number
+    ) {}
 }
 function area(shape: Square | Rectangle) {
     if (shape instanceof Square) {
@@ -2100,12 +2132,12 @@ TypeScript 中的可区分联合是一种联合类型，它使用称为判别式
 
 ```typescript
 type Square = {
-    kind: 'square'; // Discriminant
+    kind: 'square'; // 判别式
     size: number;
 };
 
 type Circle = {
-    kind: 'circle'; // Discriminant
+    kind: 'circle'; // 判别式
     radius: number;
 };
 
@@ -2147,7 +2179,7 @@ const printValue = (val: string | number) => {
 
 ## 详尽性检查
 
-详尽性检查是 TypeScript 中的一项功能，可确保在 switch 语句或 if 语句中处理可区分联合的所有可能情况。
+详尽性检查是 TypeScript 中的一项功能，可确保在 `switch` 语句或 `if` 语句中处理可区分联合的所有可能情况。
 
 ```typescript
 type Direction = 'up' | 'down';
@@ -2201,12 +2233,23 @@ const sum = (x: { a: number; b: number }) => x.a + x.b;
 console.log(sum({ a: 5, b: 1 }));
 ```
 
-## 元组类型
+## 元组类型（匿名）
 
 元组类型是一种表示具有固定数量的元素及其相应类型的数组的类型。元组类型以固定顺序强制执行特定数量的元素及其各自的类型。当您想要表示具有特定类型的值的集合时，元组类型非常有用，其中数组中每个元素的位置都有特定的含义。
 
 ```typescript
 type Point = [number, number];
+```
+
+## 命名元组类型（已标记）
+
+元组类型可以包含每个元素的可选标签或名称。 这些标签用于提高可读性和工具帮助，不会影响您可以使用它们执行的操作。
+
+```typescript
+type T = string;
+type Tuple1 = [T, T];
+type Tuple2 = [a: T, b: T];
+type Tuple3 = [a: T, T]; // 命名元组加匿名元组
 ```
 
 ## 固定长度元组
@@ -2223,12 +2266,12 @@ x.push(2); // 错误
 
 ## 联合类型
 
-联合类型是一种表示值的类型，该值可以是多种类型之一。联合类型使用 | 表示 每种可能类型之间的符号。
+联合类型是一种表示值的类型，该值可以是多种类型之一。联合类型使用 `|` 表示 每种可能类型之间的符号。
 
 ```typescript
 let x: string | number;
-x = 'hello'; // Valid
-x = 123; // Valid
+x = 'hello'; // 有效
+x = 123; // 有效
 ```
 
 ## 交集类型
@@ -2244,7 +2287,7 @@ type Y = {
     b: string;
 };
 
-type J = X & Y; // Intersection
+type J = X & Y; // 交集
 
 const j: J = {
     a: 'a',
@@ -2261,12 +2304,12 @@ type Dictionary<T> = {
     [key: string]: T;
 };
 const myDict: Dictionary<string> = { a: 'a', b: 'b' };
-console.log(myDict['a']); // return a
+console.log(myDict['a']); // 返回 a
 ```
 
 ## 值的类型
 
-TypeScript 中的“Type from Value”是指通过类型推断从值或表达式自动推断出类型。
+TypeScript 中的"Type from Value"是指通过类型推断从值或表达式自动推断出类型。
 
 ```typescript
 const x = 'x'; // TypeScript 可以自动推断变量的类型是 string
@@ -2289,7 +2332,7 @@ const add = (x: number, y: number) => x + y; // TypeScript 可以推断函数的
 export const add = (x: number, y: number) => x + y;
 // index.ts
 import { add } from 'calc';
-const r = add(1, 2); // r is number
+const r = add(1, 2); // r 是 number 类型
 ```
 
 ## 映射类型
@@ -2313,6 +2356,24 @@ const x: MyNewType = {
 
 我们定义 MyMappedType 来映射 T 的属性，创建一个新类型，其中每个属性都是其原始类型的数组。使用它，我们创建 MyNewType 来表示与 MyType 相同的信息，但每个属性都是一个数组。
 
+## 映射类型修饰符
+
+TypeScript 中的映射类型修饰符支持对现有类型中的属性进行转换：
+
+* `readonly` 或 `+readonly`：这会将映射类型中的属性呈现为只读。
+* `-readonly`：这允许映射类型中的属性是可变的。
+* `?`：这将映射类型中的属性指定为可选。
+
+例子：
+
+```typescript
+type ReadOnly<T> = { readonly [P in keyof T]: T[P] }; // 所有属性标记为只读
+
+type Mutable<T> = { -readonly [P in keyof T]: T[P] }; // 所有标记为可变的属性
+
+type MyPartial<T> = { [P in keyof T]?: T[P] }; // 所有标记为可选的属性
+````
+
 ## 条件类型
 
 条件类型是一种创建依赖于条件的类型的方法，其中要创建的类型是根据条件的结果确定的。它们是使用 `extends` 关键字和三元运算符来定义的，以便有条件地在两种类型之间进行选择。
@@ -2323,8 +2384,8 @@ type IsArray<T> = T extends any[] ? true : false;
 const myArray = [1, 2, 3];
 const myNumber = 42;
 
-type IsMyArrayAnArray = IsArray<typeof myArray>; // Type true
-type IsMyNumberAnArray = IsArray<typeof myNumber>; // Type false
+type IsMyArrayAnArray = IsArray<typeof myArray>; // true 类型
+type IsMyNumberAnArray = IsArray<typeof myNumber>; // false 类型
 ```
 
 ## 分配条件类型
@@ -2337,7 +2398,7 @@ type NumberOrBool = number | boolean;
 type NullableNumberOrBool = Nullable<NumberOrBool>; // number | boolean | null
 ```
 
-## “infer” 条件类型中的类型推断
+## infer 条件类型中的类型推断
 
 `infer` 关键字在条件类型中使用，用于从依赖于泛型参数的类型中推断（提取）泛型参数的类型。这允许您编写更灵活且可重用的类型定义。
 
@@ -2383,7 +2444,7 @@ type ProductId = `id-${Products}-${Status}`; // "id-p1-active" | "id-p1-inactive
 
 通过使用任何类型，您向 TypeScript 编译器指示值应该不受任何限制地表示。为了最大限度地提高代码中的类型安全性，请考虑以下事项：
 
-* 将any的使用限制在类型确实未知的特定情况下。
+* 将 `any` 的使用限制在类型确实未知的特定情况下。
 * 不要从函数返回 `any` 类型，因为使用该函数会在代码中失去类型安全性，从而削弱类型安全性。
 * 如果您需要使编译器保持沉默，请使用 `@ts-ignore` 而不是 `any`。
 
@@ -2435,7 +2496,7 @@ const sayHello = (): void => {
 ```typescript
 const infiniteLoop = (): never => {
     while (true) {
-        // do something
+        // 做点什么
     }
 };
 ```
@@ -2455,10 +2516,10 @@ type Direction = 'up' | 'down';
 const move = (direction: Direction): void => {
     switch (direction) {
         case 'up':
-            // move up
+            // 向上移动
             break;
         case 'down':
-            // move down
+            // 向下移动
             break;
         default:
             const exhaustiveCheck: never = direction;
@@ -2489,7 +2550,7 @@ interface InterfaceName {
 ```typescript
 type TypeName = {
     property1: Type1;
-    // …
+    // ...
     method1(arg1: ArgType1, arg2: ArgType2): ReturnType;
     // ...
 };
@@ -2497,7 +2558,7 @@ type TypeName = {
 
 `interface InterfaceName` 或者 `type TypeName`: 定义接口的名称。
 `property1`: `Type1`: 指定接口的属性及其相应的类型。可以定义多个属性，每个属性用分号分隔。
-`method1(arg1: ArgType1, arg2: ArgType2): ReturnType;` method2(): void;: 指定接口的方法。方法用其名称进行定义，后跟括号中的参数列表和返回类型。可以定义多个方法，每个方法用分号分隔。
+`method1(arg1: ArgType1, arg2: ArgType2): ReturnType;`: 指定接口的方法。方法用其名称进行定义，后跟括号中的参数列表和返回类型。可以定义多个方法，每个方法用分号分隔。
 
 接口示例:
 
@@ -2566,7 +2627,7 @@ TypeScript 有几个内置的原属数据类型，可用于定义变量、函数
 ## 常见的内置JS对象
 
 TypeScript 是 JavaScript 的超集，它包含所有常用的内置 JavaScript 对象。您可以在 Mozilla 开发者网络 (MDN) 文档网站上找到这些对象的详细列表：
-<https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects>
+[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects)
 
 以下是一些常用的内置 JavaScript 对象的列表：
 
@@ -2636,26 +2697,6 @@ class Greeter {
 console.log(new Greeter('Hello').sayHi('Simon'));
 ```
 
-## Get 与 Set
-
-Getter 和 Setter 是特殊方法，允许您定义类属性的自定义访问和修改行为。它们使您能够封装对象的内部状态，并在获取或设置属性值时提供附加逻辑。在 TypeScript 中，getter 和 setter 分别使用 `get` 和 `set` 关键字定义。这是一个例子：
-
-```typescript
-class MyClass {
-    private _myProperty: string;
-
-    constructor(value: string) {
-        this._myProperty = value;
-    }
-    get myProperty(): string {
-        return this._myProperty;
-    }
-    set myProperty(value: string) {
-        this._myProperty = value;
-    }
-}
-```
-
 ## 合并与扩展
 
 合并和扩展是指与使用类型和接口相关的两个不同概念。
@@ -2702,7 +2743,9 @@ const dog: Bird = {
 
 ## 类型和接口之间的差异
 
-声明合并（增强）：接口支持声明合并，这意味着您可以定义多个具有相同名称的接口，TypeScript 会将它们合并为具有组合属性和方法的单个接口。另一方面，类型不支持声明合并。当您想要添加额外的功能或自定义现有类型而不修改原始定义或修补丢失或不正确的类型时，这可能会很有帮助。
+声明合并（增强）：
+
+接口支持声明合并，这意味着您可以定义多个具有相同名称的接口，TypeScript 会将它们合并为具有组合属性和方法的单个接口。 另一方面，类型不支持声明合并。 当您想要添加额外的功能或自定义现有类型而不修改原始定义或修补丢失或不正确的类型时，这可能会很有帮助。
 
 ```typescript
 interface A {
@@ -2717,7 +2760,9 @@ const j: A = {
 };
 ```
 
-扩展其他类型/接口：类型和接口都可以扩展其他类型/接口，但语法不同。对于接口，您可以使用 `extends` 关键字从其他接口继承属性和方法。但是，接口无法扩展像联合类型这样的复杂类型。
+扩展其他类型/接口：
+
+类型和接口都可以扩展其他类型/接口，但语法不同。 对于接口，您可以使用“extends”关键字从其他接口继承属性和方法。 但是，接口无法扩展像联合类型这样的复杂类型。
 
 ```typescript
 interface A {
@@ -2753,7 +2798,9 @@ const c: B = {
 };
 ```
 
-并集和交集类型：在定义并集和交集类型时，类型更加灵活。通过 `type` 关键字，您可以轻松创建使用 `|` 运算符的联合类型和使用 `&` 运算符的交集类型。虽然接口也可以间接表示联合类型，但它们没有对交集类型的内置支持。
+并集和交集类型：
+
+在定义并集和交集类型时，类型更加灵活。 通过“type”关键字，您可以使用“|”运算符轻松创建联合类型，并使用“&”运算符创建交集类型。 虽然接口也可以间接表示联合类型，但它们没有对交集类型的内置支持。
 
 ```typescript
 type Department = 'dep-x' | 'dep-y'; // 并集
@@ -2814,12 +2861,12 @@ class Person {
 
 该类有一个 `public` 名为 `sayHi` 的方法，用于记录问候消息。
 
-要在 TypeScript 中创建类的实例，可以使用 `new` 关键字，后跟类名，然后使用括号 ()。例如：
+要在 TypeScript 中创建类的实例，可以使用 `new` 关键字，后跟类名，然后使用括号 `()`。例如：
 
 <!-- skip -->
 ```typescript
 const myObject = new Person('John Doe', 25);
-myObject.sayHi(); // output: Hello, my name is John Doe and I am 25 years old.
+myObject.sayHi(); // 输出：Hello, my name is John Doe and I am 25 years old.
 ```
 
 ### 构造函数
@@ -2922,7 +2969,7 @@ class DerivedClass extends BaseClass {
 }
 
 // 尝试直接实例化基类将导致错误
-// const baseObj = new BaseClass(); // 错误：类“BaseClass”的构造函数受到保护。
+// const baseObj = new BaseClass(); // 错误：类"BaseClass"的构造函数受到保护。
 
 // 创建派生类的实例
 const derivedObj = new DerivedClass(10);
@@ -2938,9 +2985,29 @@ const derivedObj = new DerivedClass(10);
 
 修饰符 `public` 提供对类成员的不受限制的访问，允许从任何地方访问它。
 
+### Get 与 Set
+
+Getter 和 Setter 是特殊方法，允许您定义类属性的自定义访问和修改行为。它们使您能够封装对象的内部状态，并在获取或设置属性值时提供附加逻辑。在 TypeScript 中，getter 和 setter 分别使用 `get` 和 `set` 关键字定义。这是一个例子：
+
+```typescript
+class MyClass {
+    private _myProperty: string;
+
+    constructor(value: string) {
+        this._myProperty = value;
+    }
+    get myProperty(): string {
+        return this._myProperty;
+    }
+    set myProperty(value: string) {
+        this._myProperty = value;
+    }
+}
+```
+
 ### 类中的自动访问器
 
-TypeScript 版本 4.9 添加了对自动访问器的支持，这是即将推出的 ECMAScript 功能。它们类似于类属性，但使用“accessor”关键字声明。
+TypeScript 版本 4.9 添加了对自动访问器的支持，这是即将推出的 ECMAScript 功能。它们类似于类属性，但使用"accessor"关键字声明。
 
 ```typescript
 class Animal {
@@ -2952,7 +3019,7 @@ class Animal {
 }
 ```
 
-自动访问器被“脱糖”为私有get访问set器，在无法访问的属性上运行。
+自动访问器被"脱糖"为私有get访问set器，在无法访问的属性上运行。
 
 <!-- skip -->
 ```typescript
@@ -2997,8 +3064,11 @@ person1.introduce(); // Hello, my name is Alice.
 
 ```typescript
 class Person {
-    constructor(private name: string, public age: number) {
-        // 构造函数中的“private”和“public”关键字自动声明并初始化相应的类属性。
+    constructor(
+        private name: string,
+        public age: number
+    ) {
+        // 构造函数中的"private"和"public"关键字自动声明并初始化相应的类属性。
     }
     public introduce(): void {
         console.log(
@@ -3032,7 +3102,7 @@ class Cat extends Animal {
 }
 
 const cat = new Cat('Whiskers');
-cat.makeSound(); // Output: Whiskers meows.
+cat.makeSound(); // 输出：Whiskers meows.
 ```
 
 ### 使用泛型
@@ -3074,14 +3144,14 @@ console.log(container2.getItem()); // World
 
 装饰器的一些常见用例包括：
 
-* 观察属性变化
-* 观察方法调用
-* 添加额外的属性或方法
-* 运行时验证
-* 自动序列化和反序列化
-* 记录
-* 授权与认证
-* 错误防护
+* 观察属性变化。
+* 观察方法调用。
+* 添加额外的属性或方法。
+* 运行时验证。
+* 自动序列化和反序列化。
+* 日志记录。
+* 授权和认证。
+* 错误防护。
 
 注意：版本 5 的装饰器不允许装饰参数。
 
@@ -3145,7 +3215,7 @@ class MyClass {
     prop1 = 'hello!';
 }
 
-console.log(new MyClass().prop1); // Logs: HELLO!
+console.log(new MyClass().prop1); // 日志：HELLO!
 ```
 
 #### 方法装饰器
@@ -3179,7 +3249,15 @@ class MyClass {
     }
 }
 
-console.log(new MyClass().sayHello()); // Logs: Hello!
+new MyClass().sayHello();
+```
+
+它记录：
+
+```shell
+LOG: Entering method 'sayHello'.
+Hello!
+LOG: Exiting method 'sayHello'.
 ```
 
 #### Getter 和 Setter 装饰器
@@ -3219,10 +3297,47 @@ class MyClass {
 }
 
 const obj = new MyClass(10);
-console.log(obj.getValue); // Valid: 10
+console.log(obj.getValue); // 有效: 10
 
 const obj2 = new MyClass(999);
-console.log(obj2.getValue); // Throw: Invalid!
+console.log(obj2.getValue); // 抛出异常: Invalid!
+```
+
+### 装饰器元数据
+
+装饰器元数据简化了装饰器在任何类中应用和利用元数据的过程。 他们可以访问上下文对象上的新元数据属性，该属性可以充当基元和对象的密钥。
+可以通过"Symbol.metadata"在类上访问元数据信息。
+
+元数据可用于各种目的，例如调试、序列化或使用装饰器的依赖项注入。
+
+```typescript
+//@ts-ignore
+Symbol.metadata ??= Symbol('Symbol.metadata'); // 简单的兼容性填充
+
+type Context =
+    | ClassFieldDecoratorContext
+    | ClassAccessorDecoratorContext
+    | ClassMethodDecoratorContext; // 上下文对象包含属性元数据: 装饰器元数据
+
+function setMetadata(_target: any, context: Context) {
+    // 使用基本类型值设置元数据对象
+    context.metadata[context.name] = true;
+}
+
+class MyClass {
+    @setMetadata
+    a = 123;
+
+    @setMetadata
+    accessor b = 'b';
+
+    @setMetadata
+    fn() {}
+}
+
+const metadata = MyClass[Symbol.metadata]; // 获取元数据对象信息
+
+console.log(JSON.stringify(metadata)); // {"bar":true,"baz":true,"foo":true}
 ```
 
 ### 继承
@@ -3255,11 +3370,11 @@ class Dog extends Animal {
     }
 }
 
-// create an instance of the base class
+// 创建基类的一个实例
 const animal = new Animal('Generic Animal');
 animal.speak(); // The animal makes a sound
 
-// create an instance of the derived class
+// 创建派生类的一个实例
 const dog = new Dog('Max', 'Labrador');
 dog.speak(); // Woof! Woof!"
 ```
@@ -3308,7 +3423,7 @@ class OfficeWorker {
 const w1 = new OfficeWorker('James');
 const w2 = new OfficeWorker('Simon');
 const total = OfficeWorker.memberCount;
-console.log(total);
+console.log(total); // 2
 ```
 
 ### 属性初始化
@@ -3364,8 +3479,8 @@ x.log();
 
 ```typescript
 class MyClass {
-    add(a: number, b: number): number; // Overload signature 1
-    add(a: string, b: string): string; // Overload signature 2
+    add(a: number, b: number): number; // 重载签名 1
+    add(a: string, b: string): string; // 重载签名 2
 
     add(a: number | string, b: number | string): number | string {
         if (typeof a === 'number' && typeof b === 'number') {
@@ -3379,7 +3494,7 @@ class MyClass {
 }
 
 const r = new MyClass();
-console.log(r.add(10, 5));
+console.log(r.add(10, 5)); // 日志：15
 ```
 
 ## 泛型
@@ -3390,7 +3505,7 @@ console.log(r.add(10, 5));
 
 ### 泛型类型
 
-要定义泛型类型，可以使用尖括号 (<>) 来指定类型参数，例如：
+要定义泛型类型，可以使用尖括号 (`<>`) 来指定类型参数，例如：
 
 ```typescript
 function identity<T>(arg: T): T {
@@ -3399,7 +3514,7 @@ function identity<T>(arg: T): T {
 const a = identity('x');
 const b = identity(123);
 
-const getLen = <T>(data: ReadonlyArray<T>) => data.length;
+const getLen = <T,>(data: ReadonlyArray<T>) => data.length;
 const len = getLen([1, 2, 3]);
 ```
 
@@ -3442,7 +3557,7 @@ const printLen = <T extends { length: number }>(value: T): void => {
 printLen('Hello'); // 5
 printLen([1, 2, 3]); // 3
 printLen({ length: 10 }); // 10
-printLen(123); // Invalid
+printLen(123); // 无效
 ```
 
 3.4 RC 版中引入的泛型的一个有趣功能是高阶函数类型推断，它引入了传播泛型类型参数：
@@ -3469,10 +3584,10 @@ const boxList = pipe(box, list); // <V>(x: V) => { value: V }[]
 ```typescript
 function process<T>(value: T): void {
     if (typeof value === 'string') {
-        // Value is narrowed down to type 'string'
+        // Value 的类型被缩小到 'string' 类型
         console.log(value.length);
     } else if (typeof value === 'number') {
-        // Value is narrowed down to type 'number'
+        // Value 的类型被缩小到 'number' 类型
         console.log(value.toFixed(2));
     }
 }
@@ -3499,12 +3614,12 @@ const obj = {
     prop1: 'Origin',
 };
 
-log(obj); // Valid
+log(obj); // 有效
 ```
 
 ## 命名空间
 
-在 TypeScript 中，命名空间用于将代码组织到逻辑容器中，防止命名冲突并提供一种将相关代码分组在一起的方法。使用关键字 `export` 允许在“外部”模块中访问名称空间。
+在 TypeScript 中，命名空间用于将代码组织到逻辑容器中，防止命名冲突并提供一种将相关代码分组在一起的方法。使用关键字 `export` 允许在"外部"模块中访问名称空间。
 
 ```typescript
 export namespace MyNamespace {
@@ -3540,9 +3655,11 @@ console.log(obj[key1]); // value 1
 console.log(obj[key2]); // value 2
 ```
 
+在 WeakMap 和 WeakSet 中，现在允许符号作为键。
+
 ## 三斜杠指令
 
-三斜杠指令是特殊注释，为编译器提供有关如何处理文件的说明。这些指令以三个连续斜杠 (///) 开头，通常放置在 TypeScript 文件的顶部，对运行时行为没有影响。
+三斜杠指令是特殊注释，为编译器提供有关如何处理文件的说明。这些指令以三个连续斜杠 (`///`) 开头，通常放置在 TypeScript 文件的顶部，对运行时行为没有影响。
 
 三斜杠指令用于引用外部依赖项、指定模块加载行为、启用/禁用某些编译器功能等等。几个例子：
 
@@ -3689,7 +3806,7 @@ type Person = {
 type A = Readonly<Person>;
 
 const a: A = { name: 'Simon', age: 17 };
-a.name = 'John'; // Invalid
+a.name = 'John'; // 无效
 ```
 
 #### Record\<K, T\>
@@ -3778,7 +3895,10 @@ type MyType = Parameters<Func>; // [a: string, b: number]
 
 ```typescript
 class Person {
-    constructor(public name: string, public age: number) {}
+    constructor(
+        public name: string,
+        public age: number
+    ) {}
 }
 type PersonConstructorParams = ConstructorParameters<typeof Person>; // [name: string, age: number]
 const params: PersonConstructorParams = ['John', 30];
@@ -3821,7 +3941,7 @@ person.sayHello(); // Hello, my name is John!
 
 #### ThisParameterType\<T\>
 
-从函数类型 T 中提取“this”参数的类型。
+从函数类型 T 中提取"this"参数的类型。
 
 ```typescript
 interface Person {
@@ -3833,7 +3953,7 @@ type PersonThisType = ThisParameterType<Person['greet']>; // Person
 
 #### OmitThisParameter\<T\>
 
-从函数类型 T 中删除“this”参数。
+从函数类型 T 中删除"this"参数。
 
 ```typescript
 function capitalize(this: String) {
@@ -3855,7 +3975,7 @@ type Logger = {
 
 let helperFunctions: { [name: string]: Function } & ThisType<Logger> = {
     hello: function () {
-        this.log('some error'); // 有效，因为“log”是“this”的一部分
+        this.log('some error'); // 有效，因为"log"是"this"的一部分
         this.update(); // 无效
     },
 };
@@ -3893,6 +4013,32 @@ type MyType = Capitalize<'abc'>; // "Abc"
 type MyType = Uncapitalize<'Abc'>; // "abc"
 ```
 
+#### NoInfer\<T\>
+
+NoInfer 是一种实用类型，旨在阻止泛型函数范围内类型的自动推断。
+
+示例：
+
+```typescript
+// 泛型函数范围内类型的自动推断。
+function fn<T extends string>(x: T[], y: T) {
+    return x.concat(y);
+}
+const r = fn(['a', 'b'], 'c'); // 此处的类型为 ("a" | "b" | "c")[]
+```
+
+使用 NoInfer：
+
+<!-- skip -->
+```typescript
+// 使用 NoInfer 阻止类型推断的示例函数
+function fn2<T extends string>(x: T[], y: NoInfer<T>) {
+  return x.concat(y);
+}
+
+const r2 = fn2(["a", "b"], "c"); // 错误：类型为“c”的类型参数不能分配给类型为“a”|“b”的参数。
+```
+
 ## 其他
 
 ### 错误和异常处理
@@ -3903,11 +4049,11 @@ Try-Catch-Finally 块：
 
 ```typescript
 try {
-    // code that might throw an error
+    // 可能会抛出异常的代码
 } catch (error) {
-    // handle the error
+    // 处理错误
 } finally {
-    // code that always executes, finally is optional
+    // 总是会执行的代码, finally 是可选的
 }
 ```
 
@@ -3915,14 +4061,14 @@ try {
 
 ```typescript
 try {
-    // code that might throw different types of errors
+    // 可能会抛出不同类型错误的代码
 } catch (error) {
     if (error instanceof TypeError) {
-        // handle TypeError
+        // 处理 TypeError
     } else if (error instanceof RangeError) {
-        // handle RangeError
+        // 处理 RangeError
     } else {
-        // handle other errors
+        // 处理其他的错误
     }
 }
 ```
@@ -3998,30 +4144,33 @@ o.select();
 
 由于 TypeScript 是 JavaScript 的超集，因此它内置了 JavaScript 的异步语言功能，例如：
 
-Promises：Promise 是一种处理异步操作及其结果的方法，使用 `.then()`和等方法 `.catch()` 来处理成功和错误条件。
+Promises：
 
-要了解更多信息： <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise>
+Promise 是一种处理异步操作及其结果的方法，使用 `.then()`和等方法 `.catch()` 来处理成功和错误条件。
+
+要了解更多信息： [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 
 Async/await:
+
 Async/await 关键字是一种为处理 Promise 提供看起来更同步的语法的方法。`async` 关键字用于定义异步函数，并且 `await` 关键字在异步函数中使用以暂停执行，直到 Promise 被解决或拒绝。
 
 要了解更多信息：
-<https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function>
-<https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await>
+[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
+[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await)
 
 TypeScript 很好地支持以下 API：
 
-Fetch API
-<https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API>
+Fetch API:
+[https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 
-Web Workers
-<https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API>
+Web Workers:
+[https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
 
-Shared Workers
-<https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker>
+Shared Workers:
+[https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker)
 
-WebSocket
-<https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API>
+WebSocket:
+[https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
 
 ### 迭代器和生成器
 
@@ -4033,7 +4182,10 @@ TypeScript 很好地支持交互器和生成器。
 class NumberIterator implements Iterable<number> {
     private current: number;
 
-    constructor(private start: number, private end: number) {
+    constructor(
+        private start: number,
+        private end: number
+    ) {
         this.current = start;
     }
 
@@ -4083,9 +4235,9 @@ TypeScript 还支持异步迭代器和异步生成器。
 
 要了解更多信息：
 
-<https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator>
+[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator)
 
-<https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator>
+[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator)
 
 ### TsDocs JSDoc 参考
 
@@ -4107,10 +4259,10 @@ power(10, 2); // function power(base: number, exponent: number): number
 ```
 
 此链接提供了完整文档：
-<https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html>
+[https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html)
 
 从版本 3.7 开始，可以从 JavaScript JSDoc 语法生成 .d.ts 类型定义。更多信息可以在这里找到：
-<https://www.typescriptlang.org/docs/handbook/declaration-files/dts-from-js.html>
+[https://www.typescriptlang.org/docs/handbook/declaration-files/dts-from-js.html](https://www.typescriptlang.org/docs/handbook/declaration-files/dts-from-js.html)
 
 ### @types
 
@@ -4122,7 +4274,7 @@ npm install --save-dev @types/lodash
 
 将在您当前的项目中安装 `lodash` 的类型定义。
 
-要为 @types 包的类型定义做出贡献，请向 <https://github.com/DefinitelyTyped/DefinitelyTyped> 提交pr请求。
+要为 @types 包的类型定义做出贡献，请向 [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) 提交pr请求。
 
 ### JSX
 
@@ -4136,7 +4288,7 @@ TypeScript 通过提供类型检查和静态分析来扩展 JSX 的功能。
 * "react": 启用 TypeScript 的内置 JSX 转换。 将使用 React.createElement 。
 
 所有选项均可在此处使用：
-<https://www.typescriptlang.org/tsconfig#jsx>
+[https://www.typescriptlang.org/tsconfig#jsx](https://www.typescriptlang.org/tsconfig#jsx)
 
 ### ES6 模块
 
@@ -4161,7 +4313,7 @@ TypeScript 确实支持 ES6 (ECMAScript 2015) 和许多后续版本。这意味�
 
 ### ES7 求幂运算符
 
-求幂 (**) 运算符计算通过将第一个操作数进行第二个操作数的幂获得的值。它的功能与 Math.pow() 类似，但增加了接受 BigInts 作为操作数的功能。TypeScript 完全支持在 `tsconfig.json` 文件中设置 `target` 为 `es2016`或更大版本来使用此运算符。
+求幂 (`**`) 运算符计算通过将第一个操作数进行第二个操作数的幂获得的值。它的功能与 `Math.pow()` 类似，但增加了接受 BigInts 作为操作数的功能。TypeScript 完全支持在 `tsconfig.json` 文件中设置 `target` 为 `es2016`或更大版本来使用此运算符。
 
 ```typescript
 console.log(2 ** (2 ** 2)); // 16
@@ -4185,14 +4337,13 @@ async function* asyncNumbers(): AsyncIterableIterator<number> {
 })();
 ```
 
-### New.target
+### New target 元属性
 
 您可以在 TypeScript 中使用 `new.target` 元属性，该属性使您能够确定是否使用 new 运算符调用函数或构造函数。它允许您检测对象是否是由于构造函数调用而创建的。
 
 ```typescript
 class Parent {
     constructor() {
-        debugger;
         console.log(new.target); // 记录用于创建实例的构造函数
     }
 }
@@ -4226,29 +4377,15 @@ async function renderWidget() {
 renderWidget();
 ```
 
-### “tsc –watch”
+### "tsc –watch"
 
-此命令使用 --watch 参数启动 TypeScript 编译器，能够在修改 TypeScript 文件时自动重新编译它们。
+此命令使用 `--watch` 参数启动 TypeScript 编译器，能够在修改 TypeScript 文件时自动重新编译它们。
 
 ```shell
 tsc --watch
 ```
 
 从 TypeScript 4.9 版本开始，文件监控主要依赖于文件系统事件，如果无法建立基于事件的观察程序，则会自动诉诸轮询。
-
-### 明确的赋值断言 (!)
-
-明确赋值断言或也称为非空断言运算符告诉 TypeScript 编译器键入的值不能为 null 或未定义，这是一种覆盖编译器分析并通知它在使用变量之前将被赋值的方法。
-
-```typescript
-type Person = {
-    name: string;
-};
-
-const printName = (person?: Person) => {
-    console.log(`Name is ${person!.name}`);
-};
-```
 
 ### 默认声明
 
@@ -4262,19 +4399,9 @@ greet(); // Hello, Anonymous!
 greet('John'); // Hello, John!
 ```
 
-### “const“ 断言
-
-Const 断言是一项功能，允许您根据变量的初始化值声明具有更具体字面量类型的变量。这是一种向编译器声明该值必须被视为不可变字面量的方法。
-
-<!-- skip -->
-```typescript
-let arr = [1, 2, 3] as const; // readonly [1, 2, 3]
-arr.push(4); // Invalid
-```
-
 ### 可选链
 
-可选的链接运算符 ?. 与常规点运算符 (.) 一样用于访问属性或方法。但是，它通过优雅处理 `undefined` 和 `null` 来终止表达式并返回 `undefined`，而不是抛出错误。
+可选的链接运算符 `?.` 与常规点运算符 (`.`) 一样用于访问属性或方法。但是，它通过优雅处理 `undefined` 和 `null` 来终止表达式并返回 `undefined`，而不是抛出错误。
 
 ```typescript
 type Person = {
@@ -4293,7 +4420,7 @@ const person: Person = {
 console.log(person.address?.city); // undefined
 ```
 
-### 空合并运算符 (??)
+### 空合并运算符
 
 如果 `??` 左侧是 `null` 或者 `undefined` ，则空合并运算符返回右侧值，否则，它返回左侧值。
 
@@ -4338,6 +4465,17 @@ makeGreeting('Simon');
 makeGreeting(['Simone', 'John']);
 ```
 
+### 递归类型
+
+递归类型是可以引用自身的类型。 这对于定义具有分层或递归结构（可能无限嵌套）的数据结构非常有用，例如链表、树和图。
+
+```typescript
+type ListNode<T> = {
+    data: T;
+    next: ListNode<T> | undefined;
+};
+```
+
 ### 递归条件类型
 
 可以使用 TypeScript 中的逻辑和递归来定义复杂的类型关系。让我们简单地分解一下：
@@ -4373,7 +4511,7 @@ type NestedArray = [1, [2, [3, 4], 5], 6];
 type FlattenedArray = Flatten<NestedArray>; // 2 | 3 | 4 | 5 | 1 | 6
 ```
 
-### Node.js 中的 ECMAScript 模块支持
+### Node 中的 ECMAScript 模块支持
 
 Node.js 从 15.3.0 版本开始添加了对 ECMAScript 模块的支持，而 TypeScript 从 4.7 版本开始增加了对 Node.js 的 ECMAScript 模块支持。可以通过将 `tsconfig.json` 文件中的`module`属性的值设置为 `nodenext` 来启用此支持。这是一个例子：
 
@@ -4387,9 +4525,9 @@ Node.js 从 15.3.0 版本开始添加了对 ECMAScript 模块的支持，而 Typ
 }
 ```
 
-Node.js 支持两种模块文件扩展名：`.mjs` 的ES 模块和 `.cjs` 的CommonJS 模块。TypeScript 中的等效文件扩展名适用 `.mjs` 于 ES 模块和 `.js` 于CommonJS 模块。当 TypeScript 编译器将这些文件转译为 JavaScript 时，它将分别创建 `.mjs` 和 `.js` 文件。
+Node.js 支持两种模块文件扩展名：`.mjs` 的ES 模块和 `.cjs` 的CommonJS 模块。TypeScript 中的等效文件扩展名适用 `.mts` 于 ES 模块和 `.cts` 于CommonJS 模块。当 TypeScript 编译器将这些文件转译为 JavaScript 时，它将分别创建 `.mjs` 和 `.cjs` 文件。
 
-如果您想在项目中使用 ES 模块，可以type在 package.json 文件中将该属性设置为“module”。这指示 Node.js 将项目视为 ES 模块项目。
+如果您想在项目中使用 ES 模块，可以type在 package.json 文件中将该属性设置为"module"。这指示 Node.js 将项目视为 ES 模块项目。
 
 此外，TypeScript 还支持 .d.ts 文件中的类型声明。这些声明文件为用 TypeScript 编写的库或模块提供类型信息，允许其他开发人员通过 TypeScript 的类型检查和自动完成功能来利用它们。
 
@@ -4400,7 +4538,7 @@ Node.js 支持两种模块文件扩展名：`.mjs` 的ES 模块和 `.cjs` 的Com
 ```typescript
 function isNumber(value: unknown): asserts value is number {
     if (typeof value !== 'number') {
-        throw new Error('not a number');
+        throw new Error('Not a number');
     }
 }
 ```
@@ -4408,9 +4546,10 @@ function isNumber(value: unknown): asserts value is number {
 或者可以声明为函数表达式：
 
 ```typescript
-const isNumber1 = (value: unknown): asserts value is number => {
+type AssertIsNumber = (value: unknown) => asserts value is number;
+const isNumber: AssertIsNumber = value => {
     if (typeof value !== 'number') {
-        throw new Error('not a number');
+        throw new Error('Not a number');
     }
 };
 ```
@@ -4434,7 +4573,7 @@ type Student = [string, number];
 const [name, age]: Student = ['Simone', 20];
 ```
 
-术语“可变参数”意味着不定数量（接受可变数量的参数）。
+术语"可变参数"意味着不定数量（接受可变数量的参数）。
 
 可变参数元组是一种元组类型，它具有以前的所有属性，但确切的形状尚未定义：
 
@@ -4496,40 +4635,13 @@ console.log('\u0041'.normalize());
 
 TypeScript 通过为原语及其相应的对象包装器提供单独的类型来表示这种区别：
 
-string => String
-
-number => Number
-
-boolean => Boolean
-
-symbol => Symbol
-
-bigint => BigInt
+* string => String
+* number => Number
+* boolean => Boolean
+* symbol => Symbol
+* bigint => BigInt
 
 通常不需要盒装类型。避免使用装箱类型，而是使用基元类型，例如 `string` 代替 `String`。
-
-### 映射类型中的键重新映射
-
-映射类型允许您通过转换现有类型的属性来创建新类型。使用 `keyof` 和 `in` 关键字，您可以迭代类型的属性并定义修改，例如使它们可选或只读。这里有一个例子：
-
-```typescript
-type Person = {
-    name: string;
-    age: number;
-    email: string;
-};
-
-type PartialPerson = {
-    [K in keyof Person]?: Person[K]; // 这将使得所有属性变成可选
-};
-
-const partialPerson: PartialPerson = {
-    name: 'John',
-    age: 30,
-};
-
-partialPerson.email = 'john@example.com';
-```
 
 ### TypeScript 中的协变和逆变
 
@@ -4597,34 +4709,40 @@ feedAnimal = feedDog; // 无效: Type 'Feed<Dog>' 不能赋值给 'Feed<Animal>'
 对于协变，使用out关键字：
 
 ```typescript
-type AnimalCallback<out T> = () => T; // T is Covariant here
+type AnimalCallback<out T> = () => T; // 此处 T 是协变的
 ```
 
 对于逆变，使用in关键字：
 
 ```typescript
-type AnimalCallback<in T> = (value: T) => void; // T is Contravariance here
+type AnimalCallback<in T> = (value: T) => void; // 此处 T 是逆变的
 ```
 
-### Symbol和模板字符串模式索引签名
+### 模板字符串模式索引签名
 
-Symbol是唯一标识符，可用作对象中的属性键以防止命名冲突。
+模板字符串模式索引签名允许我们使用模板字符串模式定义灵活的索引签名。 此功能使我们能够创建可以使用特定字符串键模式进行索引的对象，从而在访问和操作属性时提供更多控制和特异性。
 
-模板字符串模式索引签名允许我们使用模板字符串模式定义灵活的索引签名。此功能使我们能够创建可以使用特定模式的字符串键进行索引的对象，从而在访问和操作属性时提供更多的控制和特异性。
-
-TypeScript 4.4 版开始允许Symbol和模板字符串模式的索引签名。
+TypeScript 4.4 版开始允许符号和模板字符串模式的索引签名。
 
 ```typescript
-type Obj = {
-    [sym: symbol]: number;
+const uniqueSymbol = Symbol('description');
+
+type MyKeys = `key-${string}`;
+
+type MyObject = {
+    [uniqueSymbol]: string;
+    [key: MyKeys]: number;
 };
 
-const a = Symbol('a');
-const b = Symbol('b');
+const obj: MyObject = {
+    [uniqueSymbol]: 'Unique symbol key',
+    'key-a': 123,
+    'key-b': 456,
+};
 
-let obj: Obj = {};
-
-obj[b] = 123;
+console.log(obj[uniqueSymbol]); // Unique symbol key
+console.log(obj['key-a']); // 123
+console.log(obj['key-b']); // 456
 ```
 
 ### satisfies操作符
@@ -4661,7 +4779,7 @@ const user2 = {
 user2.attributes?.map(console.log); //'string | string[]' 中不存在属性 'map'。'string' 中不存在属性 'map'。
 user2.nickName; // string | string[] | undefined
 
-// 使用“satisfies”运算符我们现在可以正确推断类型
+// 使用"satisfies"运算符我们现在可以正确推断类型
 const user3 = {
     name: 'Simon',
     nickName: undefined,
@@ -4670,4 +4788,182 @@ const user3 = {
 
 user3.attributes?.map(console.log); // TypeScript 推断正确: string[]
 user3.nickName; // TypeScript 推断正确: undefined
+```
+
+### 仅类型导入和导出
+
+仅类型导入和导出允许您导入或导出类型，而无需导入或导出与这些类型关联的值或函数。 这对于减小捆绑包的大小很有用。
+
+要使用仅类型导入，您可以使用`import type`关键字。
+
+TypeScript 允许在仅类型导入中使用声明和实现文件扩展名（.ts、.mts、.cts 和 .tsx），无论`allowImportingTsExtensions`设置如何。
+
+例如：
+
+<!-- skip -->
+```typescript
+import type { House } from './house.ts';
+```
+
+以下是支持的形式：
+
+<!-- skip -->
+```typescript
+import type T from './mod';
+import type { A, B } from './mod';
+import type * as Types from './mod';
+export type { T };
+export type { T } from './mod';
+```
+
+### 使用声明和显式资源管理
+
+"using"声明是块范围的、不可变的绑定，类似于"const"，用于管理一次性资源。 当使用值初始化时，该值的"Symbol.dispose"方法将被记录，并随后在退出封闭块作用域时执行。
+
+这是基于 ECMAScript 的资源管理功能，该功能对于在对象创建后执行基本的清理任务非常有用，例如关闭连接、删除文件和释放内存。
+
+笔记：
+
+* 由于最近在 TypeScript 5.2 版中引入，大多数运行时缺乏本机支持。 您将需要以下功能的填充：`Symbol.dispose`、`Symbol.asyncDispose`、`DisposableStack`、`AsyncDisposableStack`、`SuppressedError`。
+* 此外，您需要按如下方式配置 tsconfig.json：
+
+```json
+{
+    "compilerOptions": {
+        "target": "es2022",
+        "lib": ["es2022", "esnext.disposable", "dom"]
+    }
+}
+````
+
+例子：
+
+<!-- skip -->
+```typescript
+//@ts-ignore
+Symbol.dispose ??= Symbol('Symbol.dispose'); // 简单的兼容性填充
+
+const doWork = (): Disposable => {
+    return {
+        [Symbol.dispose]: () => {
+            console.log('disposed');
+        },
+    };
+};
+
+console.log(1);
+
+{
+    using work = doWork(); // 资源被声明
+    console.log(2);
+} // 资源被释放 (例如, `work[Symbol.dispose]()` 被执行)
+
+console.log(3);
+```
+
+该代码将记录：
+
+```shell
+1
+2
+disposed
+3
+```
+
+符合处置条件的资源必须遵守 `Disposable` 接口：
+
+```typescript
+// lib.esnext.disposable.d.ts
+interface Disposable {
+    [Symbol.dispose](): void;
+}
+```
+
+"using"声明在堆栈中记录资源处置操作，确保它们以与声明相反的顺序处置：
+
+<!-- skip -->
+```typescript
+{
+    using j = getA(),
+        y = getB();
+    using k = getC();
+} // 先释放 `C`, 然后 `B`, 然后 `A`.
+```
+
+即使发生后续代码或异常，也保证会释放资源。 这可能会导致处置可能引发异常，并可能抑制另一个异常。 为了保留有关被抑制错误的信息，引入了一个新的本机异常"SuppressedError"。
+
+#### 使用声明等待
+
+"await using"声明处理异步一次性资源。 该值必须具有"Symbol.asyncDispose"方法，该方法将在块末尾等待。
+
+<!-- skip -->
+```typescript
+async function doWorkAsync() {
+    await using work = doWorkAsync(); // 资源被声明
+} // // 资源被释放 (例如, `await work[Symbol.asyncDispose]()` 被执行)
+```
+
+对于异步可处置资源，它必须遵守"Disposable"或"AsyncDisposable"接口：
+
+```typescript
+// lib.esnext.disposable.d.ts
+interface AsyncDisposable {
+    [Symbol.asyncDispose](): Promise<void>;
+}
+```
+
+<!-- skip -->
+```typescript
+//@ts-ignore
+Symbol.asyncDispose ??= Symbol('Symbol.asyncDispose'); // Simple polify
+
+class DatabaseConnection implements AsyncDisposable {
+    // 当对象被异步释放时会被调用的方法
+    [Symbol.asyncDispose]() {
+        // Close the connection and return a promise
+        return this.close();
+    }
+
+    async close() {
+        console.log('Closing the connection...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        console.log('Connection closed.');
+    }
+}
+
+async function doWork() {
+    // 创建一个新的连接，并在其超出作用域时进行异步释放
+    await using connection = new DatabaseConnection(); // 资源被声明
+    console.log('Doing some work...');
+} // 资源被释放 (例如, `await connection[Symbol.asyncDispose]()` 被执行)
+
+doWork();
+```
+
+代码日志：
+
+```shell
+Doing some work...
+Closing the connection...
+Connection closed.
+```
+
+语句中允许使用"using"和"await using"声明："for"、"for-in"、"for-of"、"for-await-of"、"switch"。
+
+### 导入属性
+
+TypeScript 5.3 的导入属性（导入标签）告诉运行时如何处理模块（JSON 等）。这通过确保干净的导入来提高安全性，并与内容安全策略 (CSP) 保持一致，以实现更安全的资源加载。TypeScript 确保它们有效，但让运行时处理它们的解释以进行特定的模块处理。
+
+示例：
+
+<!-- skip -->
+```typescript
+import config from './config.json' with { type: 'json' };
+```
+
+使用动态导入：
+
+<!-- skip -->
+```typescript
+const config = import("./config.json", { with: { type: "json" } })
 ```
